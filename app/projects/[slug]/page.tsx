@@ -262,6 +262,20 @@ export default async function ProjectPage({
           </div>
         )}
 
+        {/* Brand video (Black Water Bottle) */}
+        {project.slug === "black-water-bottle" && (
+          <div className="mb-6">
+            <h2 className="font-heading text-2xl font-bold text-[#1C0A00] mb-5">Brand Video</h2>
+            <video
+              controls
+              className="w-full rounded-xl shadow-md"
+              style={{ maxHeight: "560px" }}
+            >
+              <source src="/assets/black-water-bottle/brand-video.mp4" type="video/mp4" />
+            </video>
+          </div>
+        )}
+
         {/* Spotify */}
         {content.spotifyTrackId && (
           <div className="mb-6">

@@ -408,7 +408,7 @@ export const projects: Project[] = [
     categories: ["Copy", "Ads"],
     summary:
       "39 punchy copy lines, one minimal black bottle brand, real Shopify orders — built from scratch in 6 months.",
-    coverImage: "/assets/black-water-bottle/cover.jpg",
+    coverImage: "/assets/black-water-bottle/mockups/thirsty-kya.png",
     visible: true,
     content: {
       sections: [
@@ -424,6 +424,16 @@ export const projects: Project[] = [
           heading: "Results",
           body: "Real Shopify orders confirmed (from order PDFs and GST invoices). Wrote 39 product copy lines, built the brand, got real orders.",
         },
+      ],
+      images: [
+        "/assets/black-water-bottle/mockups/thirsty-kya.png",
+        "/assets/black-water-bottle/mockups/mere-pass-paani-hai.png",
+        "/assets/black-water-bottle/mockups/water-you-looking-at.png",
+        "/assets/black-water-bottle/mockups/chuglife.png",
+        "/assets/black-water-bottle/mockups/not-vodka-probably.png",
+        "/assets/black-water-bottle/mockups/stay-thirsty.png",
+        "/assets/black-water-bottle/mockups/pa-ni.png",
+        "/assets/black-water-bottle/mockups/og-thirst-trap.png",
       ],
       copyLines: {
         featured: [

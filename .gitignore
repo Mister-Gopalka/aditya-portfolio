@@ -39,3 +39,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+public/assets/homelane/valentine.mp4
+public/assets/black-water-bottle/brand-video.mp4

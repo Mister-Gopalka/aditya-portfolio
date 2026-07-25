@@ -201,10 +201,11 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Aditya Gopalka",
-    jobTitle: "Creative Director",
+    jobTitle: ["Creative Director", "Brand Manager", "Copywriter", "Fractional CMO"],
     description:
       "Creative Director, Brand Manager, and Fractional CMO based in Delhi, India. Specialises in brand strategy, ad films, and creative direction.",
-    url: "https://adityagopalka.com",
+    url: "https://www.adityagopalka.com",
+    image: "https://www.adityagopalka.com/assets/aditya-photo.jpg",
     email: "mistergopalka@gmail.com",
     address: {
       "@type": "PostalAddress",
@@ -228,7 +229,13 @@ export default async function HomePage() {
       { "@type": "Organization", name: "Wunderman Thompson" },
       { "@type": "Organization", name: "L&K Saatchi & Saatchi" },
     ],
-    sameAs: ["https://www.linkedin.com/in/adityagopalka"],
+    sameAs: [
+      "https://www.linkedin.com/in/adityagopalka/",
+      "https://www.instagram.com/adityagopalka/",
+      "https://www.youtube.com/@MisterGopalka",
+      "https://linktr.ee/adityagopalka",
+      "https://adityagopalka.wordpress.com",
+    ],
   };
 
   return (

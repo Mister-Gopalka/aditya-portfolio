@@ -70,10 +70,19 @@ export async function generateMetadata({
       "Aditya Gopalka",
       ...project.categories,
     ],
+    alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
       title: `${project.title} — Aditya Gopalka`,
       description: desc,
       type: "article",
+      url: `/projects/${project.slug}`,
+      images: [{ url: project.coverImage, alt: `${project.title} — ${project.client}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} — Aditya Gopalka`,
+      description: desc,
+      images: [project.coverImage],
     },
   };
 }

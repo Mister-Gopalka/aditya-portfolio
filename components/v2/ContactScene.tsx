@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "./Reveal";
+import { supabase } from "@/lib/supabase";
 
 const WHATSAPP = "919560501904";
 
@@ -46,26 +47,17 @@ export default function ContactScene() {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", requirement: "" });
 
-  const FORM_ACTION = process.env.NEXT_PUBLIC_GOOGLE_FORM_ACTION_URL || "";
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!FORM_ACTION) {
-      setSubmitted(true);
-      return;
+    if (supabase) {
+      try {
+        await supabase.from("contact_submissions").insert({
+          name: form.name,
+          phone: form.phone,
+          requirement: form.requirement,
+        });
+      } catch {}
     }
-    try {
-      await fetch(FORM_ACTION, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          "entry.name": form.name,
-          "entry.phone": form.phone,
-          "entry.requirement": form.requirement,
-        }).toString(),
-      });
-    } catch {}
     setSubmitted(true);
   }
 

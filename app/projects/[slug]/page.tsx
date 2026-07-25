@@ -141,6 +141,41 @@ export default async function ProjectPage({
   const whatsappUrl = "https://wa.me/919560501904";
   const performanceAds = project.slug === "homelane" ? getPerformanceAds() : [];
 
+  const SITE = "https://www.adityagopalka.com";
+  const projectSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        name: project.title,
+        headline: project.title,
+        abstract: project.summary,
+        about: project.client,
+        genre: project.categories,
+        url: `${SITE}/projects/${project.slug}`,
+        image: `${SITE}${project.coverImage}`,
+        author: {
+          "@type": "Person",
+          name: "Aditya Gopalka",
+          url: SITE,
+          jobTitle: project.role,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: project.title,
+            item: `${SITE}/projects/${project.slug}`,
+          },
+        ],
+      },
+    ],
+  };
+
   const splitIdx = content.imagesAfterSection && content.sections
     ? content.sections.findIndex((s) => s.heading === content.imagesAfterSection)
     : -1;
@@ -149,6 +184,10 @@ export default async function ProjectPage({
 
   return (
     <main className="v2-root min-h-screen bg-(--v2-ground) text-[#FFF8F3]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
       <ScrollProgress />
 
       {/* Header — same language as the reel */}

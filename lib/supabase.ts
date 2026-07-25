@@ -48,3 +48,27 @@ export async function setProjectVisibility(visibility: Record<string, boolean>) 
     .from("site_settings")
     .upsert({ key: "project_visibility", value: JSON.stringify(visibility) });
 }
+
+export type HeroPhotoSettings = { x: number; y: number; scale: number };
+
+export async function getHeroPhotoSettings(): Promise<HeroPhotoSettings> {
+  if (!supabase) return { x: 27, y: 21, scale: 1.75 };
+  const { data } = await supabase
+    .from("site_settings")
+    .select("value")
+    .eq("key", "hero_photo")
+    .single();
+  if (!data?.value) return { x: 27, y: 21, scale: 1.75 };
+  try {
+    return JSON.parse(data.value);
+  } catch {
+    return { x: 27, y: 21, scale: 1.75 };
+  }
+}
+
+export async function setHeroPhotoSettings(settings: HeroPhotoSettings) {
+  if (!supabase) return;
+  await supabase
+    .from("site_settings")
+    .upsert({ key: "hero_photo", value: JSON.stringify(settings) });
+}

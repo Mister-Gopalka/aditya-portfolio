@@ -12,7 +12,7 @@ export default function VideoEmbed({ videoId, type, label, fbUrl, fbViews }: Vid
   if (type === "spotify") {
     return (
       <div className="w-full">
-        {label && <p className="text-sm font-medium text-[#1C0A00]/60 mb-2">{label}</p>}
+        {label && <p className="text-sm font-medium text-[#FFF8F3]/50 mb-2">{label}</p>}
         <iframe
           style={{ borderRadius: "12px" }}
           src={`https://open.spotify.com/embed/track/${videoId}?utm_source=generator`}
@@ -29,29 +29,10 @@ export default function VideoEmbed({ videoId, type, label, fbUrl, fbViews }: Vid
   if (type === "shorts") {
     return (
       <div className="flex flex-col items-center">
-        {label && <p className="text-sm font-medium text-[#1C0A00]/60 mb-2 self-start">{label}</p>}
-        <div className="relative w-full max-w-[320px] mx-auto" style={{ paddingBottom: "177.78%" }}>
-          <iframe
-            className="absolute inset-0 w-full h-full rounded-xl"
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title={label || "Video"}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            loading="lazy"
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Standard YouTube
-  return (
-    <div className="w-full">
-      {label && <p className="text-sm font-medium text-[#1C0A00]/60 mb-2">{label}</p>}
-      <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+        {label && <p className="text-sm font-medium text-[#FFF8F3]/50 mb-2 self-start">{label}</p>}
         <iframe
-          className="absolute inset-0 w-full h-full rounded-xl"
+          className="w-full max-w-[320px] rounded-xl"
+          style={{ aspectRatio: "9/16" }}
           src={`https://www.youtube.com/embed/${videoId}`}
           title={label || "Video"}
           frameBorder="0"
@@ -60,12 +41,29 @@ export default function VideoEmbed({ videoId, type, label, fbUrl, fbViews }: Vid
           loading="lazy"
         />
       </div>
+    );
+  }
+
+  // Standard YouTube
+  return (
+    <div className="w-full">
+      {label && <p className="text-sm font-medium text-[#FFF8F3]/50 mb-2">{label}</p>}
+      <iframe
+        className="w-full rounded-xl"
+        style={{ aspectRatio: "16/9" }}
+        src={`https://www.youtube.com/embed/${videoId}`}
+        title={label || "Video"}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        loading="lazy"
+      />
       {fbUrl && (
         <a
           href={fbUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 mt-2 text-xs text-[#1C0A00]/50 hover:text-[#E8604A] transition-colors"
+          className="inline-flex items-center gap-1 mt-2 text-xs text-[#FFF8F3]/40 hover:text-[#C9956A] transition-colors"
         >
           View original post on Facebook {fbViews && `(${fbViews} views)`} →
         </a>

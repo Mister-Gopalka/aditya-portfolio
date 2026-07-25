@@ -6,6 +6,8 @@ import {
   Inter,
   Plus_Jakarta_Sans,
   Lato,
+  Caveat,
+  Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
 import { getFontPairing } from "@/lib/supabase";
@@ -24,7 +26,8 @@ const dmSans = DM_Sans({
 });
 const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["600"],
+  weight: ["300", "600", "900"],
+  style: ["normal", "italic"],
   variable: "--font-fraunces",
   display: "swap",
 });
@@ -46,16 +49,49 @@ const lato = Lato({
   variable: "--font-lato",
   display: "swap",
 });
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-caveat",
+  display: "swap",
+});
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Aditya Gopalka — Creative Director, Copywriter, Campaign Director",
+  metadataBase: new URL("https://www.adityagopalka.com"),
+  title: "Aditya Gopalka — Creative Director & Copywriter in Delhi | Ad Films, Brand Campaigns",
   description:
-    "Portfolio of Aditya Gopalka — Creative Director, Copywriter, and Campaign Director based in Delhi/Mumbai. Available for campaigns, ads, and direction projects.",
+    "Aditya Gopalka is a Creative Director, Copywriter, and Brand Manager based in Delhi. 10 years of brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, Wunderman Thompson, L&K Saatchi & Saatchi, and more.",
+  keywords: [
+    "Creative Director Delhi",
+    "Copywriter Delhi",
+    "Brand Manager Delhi",
+    "Ad Film Director Delhi",
+    "Brand Campaign Delhi",
+    "Creative Director India",
+    "Aditya Gopalka",
+    "TVC Director Delhi",
+    "Digital Marketing Delhi",
+    "Campaign Director Delhi",
+  ],
+  authors: [{ name: "Aditya Gopalka" }],
   openGraph: {
-    title: "Aditya Gopalka — Creative Director, Copywriter, Campaign Director",
+    title: "Aditya Gopalka — Creative Director & Copywriter in Delhi",
     description:
-      "Portfolio of Aditya Gopalka — Creative Director, Copywriter, and Campaign Director based in Delhi/Mumbai.",
+      "Brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, and more. Based in Delhi.",
     type: "website",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aditya Gopalka — Creative Director & Copywriter in Delhi",
+    description:
+      "Brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, and more.",
   },
 };
 
@@ -74,6 +110,8 @@ export default async function RootLayout({
     inter.variable,
     plusJakarta.variable,
     lato.variable,
+    caveat.variable,
+    spaceGrotesk.variable,
   ].join(" ");
 
   return (

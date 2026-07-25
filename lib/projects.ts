@@ -1,4 +1,4 @@
-export type Category = "Ads" | "Copy" | "Campaigns";
+export type Category = "Branding" | "Films" | "Campaigns" | "Operations";
 
 export type VideoEmbed = {
   type: "youtube" | "shorts" | "spotify";
@@ -15,162 +15,452 @@ export type Project = {
   role: string;
   categories: Category[];
   summary: string;
+  result?: string;
   coverImage: string;
   visible: boolean;
   content: {
     tagline?: string;
     sections: { heading: string; body: string }[];
     adCopy?: { lines: string[] };
-    stats?: { label: string; value: string }[];
+    stats?: { label?: string; value: string; prefix?: string }[];
+    keyTakeaway?: string;
+    keyTakeawayAttribution?: string;
     videos?: VideoEmbed[];
     images?: string[];
+    imagesAfterSection?: string;
+    proofBlocks?: { title?: string; text: string; videoId?: string; images?: string[] }[];
+    brandBlock?: { vision: string; mission: string; tagline: string; taglineDesc: string };
+    salesPitch?: { intro: string; subject: string; subjectLead: string; steps: { step: string; desc: string }[]; closingLine?: string; closingVideoId?: string };
+    funnelIntro?: string;
+    playbookNote?: string;
+    funnelGroups?: { stage: string; items: { title: string; desc: string }[] }[];
+    funnelCaseStudy?: { caption: string; note: string; images: string[] };
+    campaignSpotlight?: { title: string; body: string };
+    musicStages?: {
+      stage: string;
+      title: string;
+      body: string;
+      videos?: { id: string; portrait?: boolean }[];
+      videosFirst?: boolean;
+      images?: string[];
+      media?: { type: "image" | "video"; src?: string; id?: string; portrait?: boolean; caption?: string; label?: string; desc?: string }[];
+      mediaLayout?: "grid" | "stack";
+      note?: string;
+      result?: string;
+      resultImage?: string;
+      link?: { label: string; url: string };
+    }[];
+    nextttChapters?: {
+      eyebrow?: string;
+      title: string;
+      blocks: (
+        | { kind: "sub"; text: string; deep?: boolean }
+        | { kind: "para"; text: string }
+        | { kind: "list"; items: string[]; ordered?: boolean }
+        | { kind: "reels"; reels: { label: string; url: string; youtube?: string }[] }
+        | {
+            kind: "table";
+            firstHead: string;
+            numHeads: string[];
+            rows: { name: string; status: string; stopped?: boolean; nums: string[]; groupBefore?: string }[];
+          }
+        | { kind: "film"; id: string; label?: string }
+        | { kind: "carousel"; images: string[] }
+        | { kind: "image"; src: string; caption?: string; width?: "xs" | "sm" | "md" }
+        | { kind: "week"; rows: { day: string; what: string }[] }
+      )[];
+    }[];
+    videosEyebrow?: string;
+    videosTitle?: string;
+    spotifyCopy?: string;
+    songYoutubeUrl?: string;
     spotifyTrackId?: string;
+    spotifyImage?: string;
     extraLinks?: { label: string; url: string }[];
     scriptQuote?: string;
-    copyLines?: { featured: string[]; all: string[] };
     workshopCopy?: string;
     metaResults?: { label: string; value: string }[];
     strategyPillars?: string[];
+    homelane?: {
+      campaigns: { title: string; desc: string; videoSrc?: string; youtubeId?: string; isShort?: boolean; images?: string[] }[];
+      brandExtensions: { title: string; desc: string; images: string[]; browserFrame?: boolean }[];
+      productAds: { product: string; images: string[]; connected?: boolean }[];
+      performanceImages?: string[];
+      performanceVideos?: string[];
+      festivalImages: string[];
+    };
   };
 };
 
 export const projects: Project[] = [
   {
-    slug: "oyo",
-    title: "Brand Campaign — Unlocking a New Demand Segment for OYO",
-    client: "OYO",
-    role: "First Copywriter at OYO",
-    categories: ["Copy", "Ads"],
+    slug: "troost",
+    title: "Turning 7 Scripts Into 7 Reels in One Day",
+    client: "Troost — a handwoven chenille rug brand",
+    role: "Freelance Creative Director",
+    categories: ["Films"],
     summary:
-      "Wrote the campaign that normalised couple-friendly hotel stays across India — 250K+ bookings/month.",
-    coverImage: "/assets/oyo/slide-7.png",
+      "Freelance Creative Director — screenplay, shoot, edit.",
+    result: "Delivered 14 reel ads",
+    coverImage: "/assets/troost/cover.jpg",
     visible: true,
     content: {
-      tagline: '"Get a room"',
       sections: [
         {
-          heading: "Problem",
-          body: "Demand existed. But it had no safe, visible outlet. Unmarried couples across India couldn't reliably find hotel rooms — hotels denied local ID check-ins, social stigma was high, and the experience was awkward at best. This wasn't just a product problem. It was a perception problem.",
+          heading: "The Client",
+          body: "Troost runs on performance marketing. Every two weeks, 7 new short form ads go live on Meta. What performs keeps running. The rest gets shelved.",
         },
         {
-          heading: "Insight",
-          body: "For many young Indians, privacy was hard to find. Most lived with parents. Hotels felt risky. Public spaces — parks, parking lots, a friend's flat — became the default.",
+          heading: "The Brief",
+          body: "Own the full pipeline, script to final edit, for their 7-ad batch.",
+        },
+        {
+          heading: "The Prep",
+          body: "Troost sent scripts inspired by their best performing ads. I turned each one into a unique screenplay. Scene breakdowns: Shoot live, use AI, or add in post? What sound, cast, lenses? How long each setup needs? Which actor arrives when? Etc.\n\nThen I sequenced all 7 scripts into one shoot day.\n\nIn parallel, I cast actors through Instagram and acting groups, scouted studios with the founders, and shared final lines with the cast before shoot day.",
+        },
+        {
+          heading: "Shoot Day",
+          body: "Camera, lighting, actors, founders, all on set. I directed everything. Angles, lighting, performance. 7 reels shot in one day. Within time, within budget.",
+        },
+        {
+          heading: "The Edit",
+          body: "Assigned one reel per editor. I reviewed the cuts for pacing and sound. Every ad went live.",
+        },
+      ],
+      keyTakeaway: "Delivered two 7-ad batches.",
+      videos: [
+        { type: "shorts", id: "kutiaQSsiJM", label: "Our best selling rug" },
+        { type: "shorts", id: "WVQICb-OyF4", label: "Tapped it to the floor" },
+        { type: "shorts", id: "3AR0LwkH-kY", label: "Come back story" },
+        { type: "shorts", id: "qKTgHc63SaQ", label: "Investor rejected us" },
+        { type: "shorts", id: "2gv8KC-ZUCA", label: "Customer care" },
+        { type: "shorts", id: "GervzgrnakY", label: "Mummy gussa ho gai" },
+      ],
+      extraLinks: [
+        { label: "Visit troost.in →", url: "https://www.troost.in/" },
+      ],
+    },
+  },
+  {
+    slug: "zero-se-restart",
+    title: "My Third Film With VCF: The Making of 12th Fail",
+    client: "Vinod Chopra Films",
+    role: "Creative Associate",
+    categories: ["Films"],
+    summary:
+      "Creative Associate — writing, directing, marketing.",
+    result: "Now on Amazon Prime",
+    coverImage: "/assets/zero-se-restart/poster.jpg",
+    visible: true,
+    content: {
+      sections: [
+        {
+          heading: "How I Got Here",
+          body: "I shot BTS on Shikara and 12th Fail. For Zero Se Restart (ZSR), director Jaskunwar Singh Kohli pulled me in as Creative Associate.",
+        },
+        {
+          heading: "The Film",
+          body: "What started as a YouTube series grew into a feature-length documentary on how Vinod Chopra directed 12th Fail. Everyone told him not to. He directed it anyway.\n\n150+ script drafts. Recces, replanning, casting. Vinod Chopra pulling performances out of Vikrant Massey and the cast. A slow theatrical release, an OTT explosion, then the awards. [[ZSR captures it all.]]",
+        },
+        {
+          heading: "The Filmmaking",
+          body: "Sat with the director on where the story could go. Developed subplots. Shot studio recordings with Shankar Mahadevan, Sonu Nigam and Shaan, three of India's biggest voices. Earned a cinematography credit for that. Co-directed the trailer. Contributed to the music video and teasers.",
+        },
+        {
+          heading: "The Marketing",
+          body: "I presented marketing ideas to Vinod Chopra. The best ones went to marketing meetings, where the whole team sat. Then I reworked our ideas around what the team decided.\n\nFirst angle: the story behind the story. Viewers got confused. Fiction or reality? We dropped it.\n\nSecond: a master class by Vinod Chopra. 45 years in Bollywood, breaking down how he made 12th Fail. Felt preachy. Dropped it.\n\nThird, now the trailer on Amazon Prime: never give up. The unfiltered making of a film that was never supposed to be made, by a man who was never supposed to make it.",
+        },
+        {
+          heading: "The QR Idea",
+          body: "ZSR was screening at film schools, festivals and cinemas. We wanted a community around the film. My idea: a QR code on the last frame. Scan to share your appreciation. It took viewers to a WhatsApp channel where they could message the crew directly. Hundreds joined. Beautiful messages came in.",
+        },
+        {
+          heading: "The ₹20 Note",
+          body: "Throughout ZSR, you see Vinod Chopra hand out ₹20 notes to anyone who does something great. Toward the end, I earned mine.",
+        },
+        {
+          heading: "Favourite Memory",
+          body: "Spotting character arcs in ordinary people while watching the BTS footage. Nobody knew we'd end up making a film out of the footage. Not the cast, not the crew. They were just at work on 12th Fail. But life has drama. It has dialogue. It has unfiltered moments that can’t be recreated. Being able to spot them was my favourite memory. Then pulling those shots into story beats in the final cut.",
+        },
+      ],
+      keyTakeaway: "First health, then family, then film.",
+      keyTakeawayAttribution: "— VVC's mantra",
+      videos: [
+        { type: "youtube", id: "qdpquhyZaoY", label: "Trailer / Promo" },
+        { type: "youtube", id: "iQuEu452Duc", label: "Music Video" },
+      ],
+      extraLinks: [
+        {
+          label: "Watch ZSR on Prime Video →",
+          url: "https://www.primevideo.com/region/eu/detail/0RK5T1KQ1WG63K0RKDPVUNO88Z/ref=atv_dp_share_cu_r",
+        },
+      ],
+    },
+  },
+  {
+    slug: "big-muscles",
+    title: "Wrote the Tagline and TVC Scripts for Big Muscles",
+    client: "L&K Saatchi & Saatchi",
+    role: "Senior Copywriter",
+    categories: ["Campaigns", "Films"],
+    summary:
+      "Senior Copywriter — strategy, tagline, films.",
+    result: "2 National TVCs with Ranveer Singh",
+    coverImage: "/assets/big-muscles/cover.jpg",
+    visible: true,
+    content: {
+      sections: [
+        {
+          heading: "The Strategy",
+          body: "The protein category was crowded. Every brand promised the same thing. Train longer. More endurance. Faster gains. Best protein extract. All talking to the muscle.\n\nBig Muscles needed a way in. The insight I cracked became the strategy: what really limits you isn't your body. It's your mind.",
+        },
+        {
+          heading: "The Tagline",
+          body: "You're stronger than you think.\n\nThe inner voice. The moment you hesitate. The moment you almost quit. That's when this pulls you back.",
+        },
+        {
+          heading: "The Films",
+          body: "Two national TVCs. Both with Ranveer Singh. Same premise: the moment you're about to give up, and the flip.\n\nFilm 1: [[I Can't]] Quit.\nFilm 2: [[No More]] Excuses.\n\nI wrote both scripts. The CD and production house handled the shoot.",
+        },
+      ],
+      keyTakeaway: "My first scripts to get produced.",
+      videos: [
+        { type: "youtube", id: "9jtVAy4pSRA", label: 'Film 1 — "I Can\'t Quit"' },
+        { type: "youtube", id: "dtmY_xwqDlU", label: 'Film 2 — "No More Excuses"' },
+      ],
+    },
+  },
+  {
+    slug: "oyo",
+    title: "A Viral Campaign That Got Couples A Room",
+    client: "OYO Rooms",
+    role: "Copywriter",
+    categories: ["Campaigns"],
+    summary: "Copywriter — strategy, concept, copy.",
+    result: "Launched Couple-Friendly OYOs · Crossed 250K+ bookings/month",
+    coverImage: "/assets/oyo/hero-v6.webp",
+    visible: true,
+    content: {
+      sections: [
+        {
+          heading: "Context & Problem",
+          body: "Unmarried couples across India couldn't find hotel rooms reliably. Local ID check-ins were denied. The experience was uncertain, even hostile sometimes.\n\nDemand existed. But the behaviour was suppressed.",
+        },
+        {
+          heading: "Role",
+          body: "The job was to make people comfortable with an idea that was suppressed for decades.",
         },
         {
           heading: "Strategy",
-          body: "Make the category acceptable.\n1. Remove Ambiguity → 2. Signal Safety → 3. Normalise Behaviour",
-        },
-        {
-          heading: "Writing Approach",
-          body: '"The response had to feel like it came from a friend, not a brand. Not a warning. Not a lecture. More like a wink."\n\nCampaign line: "Get a room"',
+          body: "Shift the idea from hidden to widely accepted.\n\nThree moves:\n1. Remove ambiguity.\n2. Signal safety.\n3. Normalise behaviour.",
         },
         {
           heading: "The Product",
-          body: 'Introduced "Couple Friendly OYOs" — a toggle on the app letting users filter only hotels that accept local ID check-ins for unmarried couples.',
+          body: "[[Couple Friendly OYOs.]] A toggle on the app. Users could filter for hotels that accepted local ID check-ins for unmarried couples.",
+        },
+        {
+          heading: "The Writing",
+          body: "The response had to feel like it came from a friend. Not a warning. Not a lecture. More like a wink.\n\nAfter hundreds of options, one line landed. I said it casually in a creative meeting, discussing problems for unmarried couples: \"Now when someone says get a room, you can actually get a room!\"\n\n[[Get A Room.]]\n\nThat became the campaign.\n\nAfter the tagline landed, the headlines were so much fun to write.",
+        },
+        {
+          heading: "The Ads",
+          body: "Simple, humour-packed. Each ad came from real-life experience and observation.",
         },
         {
           heading: "Execution",
-          body: "Digital Ads, Push Notifications, Social Media, In-App Messaging, SMS, Blogs & Email",
+          body: "Digital ads, push notifications, social media, in-app messaging, SMS, blogs, and email. Consistent messaging across every touchpoint reinforced the idea.",
         },
       ],
-      adCopy: {
-        lines: [
-          "No more friend's flat, No more elevators and cabs. Use Relationship Mode to Find Couple Friendly OYO Near You. Local ID is Not A Problem.",
-          "No more corner seats, No more parks and parkings. Introducing Couple Friendly OYOs",
-          "With In-Room Dining Because you're way past romantic dinners. Introducing Couple Friendly OYOs",
-          "At An Affordable Price So you can book again next week. Introducing Couple Friendly OYOs",
+      stats: [
+        { prefix: "The campaign went", value: "Viral" },
+        { value: "Couple Friendly Toggle", label: "Became a nationwide category" },
+        { value: "250K+", label: "Bookings/month · crossed for the first time" },
+        { prefix: "Normalised local ID check-ins", value: "Across India" },
+      ],
+      keyTakeaway: "Sometimes, a few right words can change behaviour across a country.",
+      images: [
+        "/assets/oyo/OYO Ad1.png",
+        "/assets/oyo/OYO Ad2.png",
+        "/assets/oyo/OYO Ad3.png",
+        "/assets/oyo/OYO Ad4.png",
+      ],
+      imagesAfterSection: "The Ads",
+    },
+  },
+  {
+    slug: "homelane",
+    title: "Built Ads That Drove Revenue and Brand Equity",
+    client: "HomeLane",
+    role: "Creative Supervisor, Copy",
+    categories: ["Branding", "Campaigns", "Operations"],
+    summary: "Creative Supervisor — campaigns, sub-brand launches, performance ads.",
+    result: "1.2 years · 10+ campaigns · 2 sub-brands",
+    coverImage: "/assets/homelane/hero-v2.jpg",
+    visible: true,
+    content: {
+      sections: [
+        {
+          heading: "My Role",
+          body: "One of India's biggest interiors brands, HomeLane spoke in many formats. My job was to keep the voice the same.\n\nAll ads and brand communications were routed through me for the final edit. I pitched ideas, built campaigns, wrote performance ads, the website copy, and supervised a team of 3 designers.\n\nI owned every message a customer got. From the first reply after an ad click, to the purchase, to the service offer after one year. Every email, every WhatsApp.",
+        },
+      ],
+      homelane: {
+        campaigns: [
+          {
+            title: "Valentine's Made Easy",
+            desc: "It's impossible to find a dinner reservation on Valentine's day. Right? Not if you're a HomeLane customer. Every HomeLane store had a living room on display. We converted them into a romantic dining spot and invited our customers who were mid-project to spend the evening in a living room that could soon be their own. I pitched it to our team. The CMO aligned operations and the Creative Director ran it with a producer. We filmed the activity. I wrote the film.",
+            youtubeId: "O0iYoiDberU",
+          },
+          {
+            title: "Modular Like Lego",
+            desc: "With modular interiors, you build your home like you played Lego. Executed with one designer. A performance ad that did branding too.",
+            youtubeId: "McWtOj2QEaQ",
+            isShort: true,
+          },
+        ],
+        // Performance ads: these video Shorts render first, then the images
+        // pulled automatically from public/assets/homelane/performance-ads/
+        performanceVideos: ["ykIkfhLEdMc", "R2vAgEjqmxc"],
+        productAds: [
+          {
+            product: "Customisable Wardrobe",
+            images: ["/assets/homelane/versa-wa.gif", "/assets/homelane/versa-benefits.png"],
+            connected: true,
+          },
+          {
+            product: "Modular Bed",
+            images: ["/assets/homelane/modular-bed-1.png", "/assets/homelane/modular-bed-2.png"],
+            connected: true,
+          },
+        ],
+        brandExtensions: [
+          {
+            title: "HomeLane Luxe",
+            desc: "The premium sub brand. High end, deeply personalised interiors.",
+            images: [
+              "/assets/homelane/luxe-emailer.jpg",
+            ],
+          },
+          {
+            title: "Cubico by HomeLane",
+            desc: "The workspace sub brand. Sharp, functional, for people who mean business.",
+            browserFrame: true,
+            images: [
+              "/assets/homelane/cubico-1.png",
+              "/assets/homelane/cubico-2.png",
+              "/assets/homelane/cubico-3.png",
+              "/assets/homelane/cubico-4.png",
+              "/assets/homelane/cubico-5.png",
+            ],
+          },
+        ],
+        festivalImages: [
+          "/assets/homelane/festival-newyear.jpg",
+          "/assets/homelane/festival-republic.jpg",
         ],
       },
-      stats: [
-        { label: "Bookings/month", value: "250K+" },
-        { label: "Impact", value: "Campaign went viral" },
-        { label: "Created", value: "Nationwide demand for couple-friendly stays" },
-      ],
-      images: [
-        "/assets/oyo/slide-7.png",
-        "/assets/oyo/slide-8.png",
-        "/assets/oyo/slide-9.png",
-        "/assets/oyo/slide-10.png",
+      keyTakeaway: "One brand. One voice.",
+      extraLinks: [
+        { label: "Visit homelane.com →", url: "https://www.homelane.com/" },
       ],
     },
   },
   {
     slug: "nepal-election",
     title: "Scaling a Political Campaign to 16M Views in 60 Days",
-    client: "Birender Kanodia | Nepal",
-    role: "Campaign Director, led 12-member team",
-    categories: ["Campaigns"],
-    summary:
-      "Led a 12-person team to take a political page from 25K to 15.9M views in 60 days using a 3-pillar content system.",
-    coverImage: "/assets/nepal/slide-1.png",
+    client: "Birender Kanodia — MP candidate, Nepal General Election 2026",
+    role: "Digital Campaign Lead",
+    categories: ["Films", "Campaigns", "Operations"],
+    summary: "Digital Campaign Lead — strategy, content, distribution, 12-member team.",
+    result: "1.9M views on the campaign's final day",
+    coverImage: "/assets/nepal/hero-v3.jpg",
     visible: true,
     content: {
       sections: [
         {
-          heading: "Starting Point",
-          body: "25K followers, near-zero engagement. 60-day election window. Facebook-first audience. Low reach, no distribution system.",
+          heading: "The Situation",
+          body: "In 2025, Nepal's government was overthrown by a Gen Z protest that started online. Every politician in the country had seen what the internet could do. A year later came the general election. My candidate was fighting for the MP seat from Kapilvastu. Nepal lives on Facebook, then TikTok, then YouTube. His Facebook page had 25K followers and zero engagement. There was no YouTube channel. No official TikTok page. Only supporter pages.",
         },
         {
-          heading: "Strategy — 3-Pillar Content System",
-          body: "1. Candidate Narrative (Authority) — turned rallies into high-energy videos, extracted 30s interview reels, built responses to opposition\n2. Audience Voice (Trust) — captured local opinions, amplified trusted media\n3. Policy Visualisation (Clarity) — turned policies into visual stories, printed QR codes for manifesto download",
+          heading: "The Plan",
+          body: "A three pillar content system. Quick content daily. Big assets weekly.",
+        },
+        {
+          heading: "Pillar 1: The Candidate's Story",
+          body: "For authority. Rallies cut into high energy films. Interviews cut into 30 second reels, key points in the header so they worked on mute. Fast replies to the opposition's allegations. The candidate stayed present and in charge of his own narrative.",
+        },
+        {
+          heading: "Pillar 2: The Audience's Voice",
+          body: "For trust. 30 second reels with farmers, students and village leaders answering one question. Why do you support him? Praise from a neighbour beats praise from a poster. We extensively shared verified news from trusted media channels too.",
+        },
+        {
+          heading: "Pillar 3: Policy",
+          body: "For clarity. We turned the manifesto into AI generated films. Complex ideas became simple visual stories. We placed QR codes at the end so anyone could download the full manifesto.",
+        },
+        {
+          heading: "The Content Engine",
+          body: "I led a 12 member team. Plan in the morning. Shoot rallies and interviews through the day. Cut long content into short. Publish everywhere. Watch the opposition, flag misinformation, answer with content the same day. The same footage fed an agency I worked with for the bigger assets. Strategic campaigns, authority films, AI policy videos. Their builds took three to four days. Some AI films shipped in 48 hours.",
         },
         {
           heading: "Distribution",
-          body: "Reels-first for reach → Live sessions for engagement → Multi-account amplification for scale",
+          body: "Facebook was the heart of the campaign. Everything went there first. I created the YouTube channel and the official TikTok page, and repurposed everything for both. Reels first, for reach. Live sessions during rallies and speeches, for real time engagement. Multiple accounts, for scale.",
         },
         {
-          heading: "Execution",
-          body: "Led 12-person team in a daily content→distribution→feedback loop. Daily planning, rally capture, long-to-short conversion, multi-platform publishing, opposition monitoring.",
+          heading: "The Boosts",
+          body: "We ran Facebook ads too, spending 50K+ per week. We boosted only what had already proven itself organically. Content that drove shares and followers first. Then content that sparked debate and shifted opinions. I did the audience targeting myself. The spend grew as voting day came closer.",
+        },
+        {
+          heading: "The Last Day",
+          body: "Election rules stop campaigning before voting day. So we built the whole curve to peak on the last legal day. On 3rd March, the page did 1.9 million views in a day. It started the campaign with one view on day one.",
         },
       ],
       stats: [
-        { label: "Total Views", value: "15,959,069" },
-        { label: "Growth", value: "+989,302.9%" },
-        { label: "Engagement", value: "571,939" },
-        { label: "Viewers", value: "1,774,346" },
-        { label: "Messaging Conversations", value: "4,559" },
-        { label: "Peak Day Views", value: "1,901,171" },
+        { value: "15.9M+", label: "Views in 60 days" },
+        { value: "+989,302%", label: "Growth over previous 60 days" },
+        { value: "571K+", label: "Engagement" },
+        { value: "81%", label: "Of new followers came from reels" },
       ],
+      keyTakeaway: "Built momentum. One post at a time.",
       videos: [
         {
           type: "youtube",
           id: "1qzrExsy2bQ",
-          label: "Main Campaign Film",
+          label: "Rally Film, shot and edited in one day",
           fbUrl: "https://www.facebook.com/share/v/18bGeJdZ4J/",
           fbViews: "137K",
         },
         {
           type: "youtube",
-          id: "VzGQHQM2ocM",
-          label: "Candidate Narrative",
+          id: "0w0SG8_AnSI",
+          label: "Answering the Opposition",
           fbUrl: "https://www.facebook.com/share/r/1AxaVsq8pr/",
           fbViews: "284K",
         },
         {
           type: "youtube",
-          id: "0w0SG8_AnSI",
-          label: "On-ground Interviews",
+          id: "VzGQHQM2ocM",
+          label: "Why I Support Him, on-ground voices",
           fbUrl: "https://www.facebook.com/share/r/1BtzzBTsf5/",
           fbViews: "273K",
         },
         {
           type: "youtube",
           id: "Y5tzf4OkJCs",
-          label: "Policy Film 1 — Vision",
+          label: "Manifesto Film 1: The Vision",
           fbUrl: "https://www.facebook.com/share/v/1CgqwGvQok/",
           fbViews: "115K",
         },
         {
           type: "youtube",
           id: "Aqh6OtD69Kw",
-          label: "Policy Film 2 — Sports",
+          label: "Manifesto Film 2: Sports",
           fbUrl: "https://www.facebook.com/share/v/1HapgpkAit/",
           fbViews: "269K",
         },
         {
           type: "youtube",
           id: "JvyuMH9oZkE",
-          label: "Policy Film 3 — Farms",
+          label: "Manifesto Film 3: Farm Lands",
           fbUrl: "https://www.facebook.com/share/v/1CiuYfop8j/",
           fbViews: "691K",
         },
@@ -184,359 +474,333 @@ export const projects: Project[] = [
   },
   {
     slug: "lepton",
-    title: "Turning a Complex Geospatial SaaS into Clear Sales Messaging",
+    title: "Made a Complex Geospatial SaaS Easy to Sell",
     client: "Lepton Software",
-    role: "Product Marketing | Messaging & Sales Enablement",
-    categories: ["Copy", "Campaigns"],
-    summary:
-      'Distilled complex geospatial tech into two words — "Map Anything." — and built a 9-collateral marketing playbook.',
-    coverImage: "/assets/lepton/slide-1.png",
-    visible: true,
-    content: {
-      tagline: '"Map Anything."',
-      sections: [
-        {
-          heading: "Context",
-          body: "Lepton builds geospatial intelligence tools powered by Google Maps APIs — helping businesses visualise operations, supply chains, and logistics.",
-        },
-        {
-          heading: "Challenge",
-          body: "The product had powerful capabilities but messaging was too technical. Sales conversations required too much explanation. Enterprise buyers couldn't quickly understand the value.",
-        },
-        {
-          heading: "Brand Positioning",
-          body: 'Tagline: "Map Anything." — two words that make a complex offering instantly understandable.\n\nVision: Make the world smarter and more productive with futuristic visualisation software.',
-        },
-        {
-          heading: "Marketing Playbook — 9 Collaterals",
-          body: "Lead Gen: Sales pitch, Battle cards, Brochures\nLead Conversion: Pre-built Emails, Demo, Testimonial Ads\nBrand Awareness: Workshops, Social Media, Team alignment",
-        },
-      ],
-      videos: [
-        {
-          type: "youtube",
-          id: "ZyC9cvJwfMU",
-          label: "Zomato Delivery Film",
-        },
-      ],
-      images: [
-        "/assets/lepton/slide-1.png",
-        "/assets/lepton/slide-2.png",
-        "/assets/lepton/slide-3.png",
-        "/assets/lepton/slide-4.png",
-      ],
-    },
-  },
-  {
-    slug: "zero-se-restart",
-    title: "Story & Marketing for a Bollywood Film",
-    client: "Vinod Chopra Films",
-    role: "Creative Associate — co-developed sub-plots, shot scenes, created subtitles, supported promo strategy",
-    categories: ["Campaigns"],
-    summary:
-      "Worked on-set and in the cutting room for a documentary on 12th Fail — winner of Stuttgart Film Festival 2025, now on Amazon Prime.",
-    coverImage: "/assets/zero-se-restart/poster.jpg",
+    role: "Marketing Consultant",
+    categories: ["Branding", "Films"],
+    summary: "Marketing Consultant — branding, sales pitch, customer acquisition funnel.",
+    result: "SaaS used by Airtel, Vodafone, HDFC, Zomato and more.",
+    coverImage: "/assets/lepton/hero-v3.jpg",
     visible: true,
     content: {
       sections: [
         {
-          heading: "The Film",
-          body: "Zero Se Restart documents the making of 12th Fail — a critically acclaimed Bollywood film. Won Audience Award at Stuttgart Film Festival 2025. Now streaming on Amazon Prime Video.",
+          heading: "The Products",
+          body: "Lepton builds geospatial intelligence products powered by Google Maps APIs.\n\nIts suite of products, including Location Intelligence, SmartCampus, SmartMarket and more, helps enterprises optimise operations, improve decision-making, and reduce recurring costs.\n\nBusinesses use these products to manage locations, assets, supply chains, logistics, and field operations at scale. Clients include Airtel, Vodafone, OYO, HDFC, and more.",
         },
         {
-          heading: "Aditya's Role",
-          body: "Co-developed sub-plots, shot scenes on set, created subtitles. Contributed to teasers, BTS content, and campaign assets. Supported end-to-end promo strategy.",
+          heading: "The Problem",
+          body: "Lepton's products were powerful, but difficult to explain.\n\nSales conversations revolved around features, APIs, and implementation details. C-suite leaders took long to understand the business value.",
         },
         {
-          heading: "Marketing Approach",
-          body: "Marketed the film as a crash course on filmmaking. Screened at film schools, festivals, and cinemas. Embedded QR code at end of film during screenings → built WhatsApp channel of cinema lovers.",
+          heading: "The Strategy",
+          body: "I shifted Lepton's communication from explaining how the products worked to demonstrating how they helped businesses grow.\n\nThe strategy centred around three pillars:\n\n[[Branding.]] Build a clear positioning business leaders could immediately understand.\n\n[[Sales Pitch.]] Lead with business outcomes, not product capabilities.\n\n[[Customer Acquisition Funnel.]] Create communication for every stage of the buyer journey, from lead generation to conversion.",
         },
       ],
-      videos: [
-        { type: "youtube", id: "qdpquhyZaoY", label: "Trailer / Promo" },
-        { type: "youtube", id: "iQuEu452Duc", label: "Music Video" },
-      ],
-      extraLinks: [
+      imagesAfterSection: "The Strategy",
+      brandBlock: {
+        vision: "To make the world smarter and more productive with futuristic visualisation software and services.",
+        mission: "Helping businesses optimise and grow by mapping their assets, operations, clients, and more.",
+        tagline: "Map Anything",
+        taglineDesc: "Every Lepton product's core proposition, distilled into two simple words. Unified under a single, memorable promise.",
+      },
+      salesPitch: {
+        intro: "I lead the conversation with business outcomes, making the value immediately clear before introducing the technology behind it. An example email for Location Intelligence.",
+        subject: "Bridge the Gap with Your Data on the Map",
+        subjectLead: "Faster decisions. Lower operating costs. Powered by five key Location Intelligence capabilities.",
+        steps: [
+          { step: "Map", desc: "Hubs, fleets & routes" },
+          { step: "Layer", desc: "Traffic, demand & delivery constraints" },
+          { step: "Identify", desc: "Delays, inefficiencies & high-cost routes" },
+          { step: "Optimise", desc: "Routing, networks & hub placement" },
+          { step: "Scale", desc: "Efficiency, speed and profits" },
+        ],
+        closingLine: "See how this helped Zomato reduce delivery time by 20%.",
+        closingVideoId: "ZyC9cvJwfMU",
+      },
+      funnelIntro: "I designed the core communication system to support every stage of the buyer journey.",
+      playbookNote: "The essential assets, not every possible one. Built to educate prospects, support sales, and grow the business.",
+      funnelGroups: [
         {
-          label: "Watch on Prime Video →",
-          url: "https://www.primevideo.com/region/eu/detail/0RK5T1KQ1WG63K0RKDPVUNO88Z/ref=atv_dp_share_cu_r",
+          stage: "Lead Generation",
+          items: [
+            { title: "Sales Pitch", desc: "Lead with one number that matters most to them." },
+            { title: "Battle Cards", desc: "A feature-to-feature comparison with competitors." },
+            { title: "Brochures", desc: "Built for specific business use cases. Sent as emails and targeted ads." },
+          ],
+        },
+        {
+          stage: "Lead Conversion",
+          items: [
+            { title: "Pre-built Emails", desc: "Ready-to-go messages for every touchpoint." },
+            { title: "Product Demo", desc: "Business specific demos with free credits to explore." },
+            { title: "Testimonial Ads", desc: "Real clients, real problems solved, ending on hard numbers." },
+          ],
+        },
+        {
+          stage: "Brand Development",
+          items: [
+            { title: "Workshops", desc: "Train the next generation of buyers." },
+            { title: "Social Media", desc: "Build a community around Lepton products." },
+            { title: "Team Alignment", desc: "A monthly sync between sales and marketing on what's working, and what needs tweaking." },
+          ],
         },
       ],
+      funnelCaseStudy: {
+        caption: "Sales Enablement",
+        note: "I repackaged customer success stories into simple sales assets the team could easily share with prospects.",
+        images: [
+          "/assets/lepton/blusmart-1.png",
+          "/assets/lepton/blusmart-2.png",
+          "/assets/lepton/blusmart-3.png",
+          "/assets/lepton/blusmart-4.png",
+          "/assets/lepton/blusmart-5.png",
+        ],
+      },
+      campaignSpotlight: {
+        title: "GITEX Morocco 2024",
+        body: "Lepton was exhibiting at GITEX Morocco 2024 with a simple objective: get telecom decision-makers attending the event to visit our booth.\n\nTo achieve this, we combined SEO, digital PR, LinkedIn advertising, targeted email outreach, and personalised invitations into one coordinated campaign.",
+      },
+      keyTakeaway: "I realised we weren't talking to engineers. We were talking to the C-suite. So I built the communication accordingly.",
     },
   },
   {
     slug: "blanket-wars",
-    title: "Event & Digital Marketing for a Music Release",
-    client: "Self-initiated (Aditya's own music)",
-    role: "Artist + Campaign Architect",
-    categories: ["Campaigns"],
+    title: "Released and Marketed My Own Song",
+    client: "Aditya Gopalka",
+    role: "Independent Artist",
+    categories: ["Films", "Campaigns", "Operations"],
     summary:
-      "3-stage release campaign for my own song — sold out a live show, 5K+ streams in week one, featured on YouTube's New Release playlist next to Ed Sheeran.",
+      "Independent Artist — community building, multi-platform marketing, ticketed live show.",
+    result: "Landed on YouTube New Releases, next to Ed Sheeran",
     coverImage: "/assets/blanket-wars/cover.jpg",
     visible: true,
     content: {
       sections: [
         {
-          heading: "Pre-release",
-          body: "Song took 3 years to make, shaped by 24 collaborators. 24-day Instagram countdown — thanked one collaborator per day, drove pre-saves. Used genre-matching tracks in countdown creatives.",
-        },
-        {
-          heading: "Release",
-          body: "Dropped teaser capturing the 3-year journey. Pushed via WhatsApp broadcasts. Offline: flyer distribution across colleges and popular spots in Delhi.",
-        },
-        {
-          heading: "Post-release",
-          body: "Partnered with Delhi startup Pauseu for a ticketed live show. Intimate experience built around the music — postcards, conversation. Drove ticket sales via Meta ads and BookMyShow.",
+          heading: "The Idea",
+          body: "People love songs. But what they love even more are stories. Stories behind the people who worked on it. Stories behind the ideas that developed into a fully produced song.\n\nSo I decided to give people not just the music, but everything they come for.\n\nThrough a three-stage marketing plan:\npre-release, release, and post-release.",
         },
       ],
-      stats: [
-        { label: "Live Event", value: "Sold out" },
-        { label: "Week 1 Streams", value: "5K+" },
-        { label: "Playlist Feature", value: "YouTube New Release (alongside Ed Sheeran)" },
+      musicStages: [
+        {
+          stage: "Pre-release",
+          title: "The 24-Day Countdown",
+          body: "The song, three years in the making, was shaped by 24 collaborators.\n\nTold that story through IG posts, thanking one person each day. Turning the process into a 24-day countdown people could follow, while driving pre-saves.",
+          mediaLayout: "grid",
+          media: [
+            { type: "video", id: "-7-c4W4o9wc", portrait: true, caption: "Song Out Tomorrow." },
+            { type: "image", src: "/assets/blanket-wars/post-jsk.png", caption: "Creative Consultancy by JSK" },
+            { type: "image", src: "/assets/blanket-wars/post-boloy.png", caption: "Mix by Boloy" },
+            { type: "image", src: "/assets/blanket-wars/post-meghna.jpg", caption: "Album Art by Meghna" },
+          ],
+          result: "The posts built momentum, week by week. Beyond new followers, I collected about 1,000 numbers and emails through pre-saves.",
+        },
+        {
+          stage: "Release",
+          title: "The Drop",
+          body: "The song went live on 150+ platforms. And everything else followed.",
+          mediaLayout: "stack",
+          media: [
+            { type: "video", id: "Q0sF6F-6LVs", label: "Teaser", desc: "Dropped on every social platform, including Reddit." },
+            { type: "image", src: "/assets/blanket-wars/whatsapp.png", portrait: true, label: "WhatsApp Broadcast", desc: "Sent to the pre-save list and personal contacts." },
+            { type: "image", src: "/assets/blanket-wars/flyer.jpg", portrait: true, label: "Fliers", desc: "Distributed offline, across colleges and popular spots." },
+          ],
+          note: "Every collateral pointed to just one URL, the YouTube song link. So the views accumulated, and distribution kept amplifying.",
+          result: "Achieved 5K+ streams in a few days and landed on YouTube's New Releases, right next to Ed Sheeran.",
+          resultImage: "/assets/blanket-wars/youtube-new-releases.png",
+        },
+        {
+          stage: "Post-release",
+          title: "The Live Show",
+          body: "A month later, I partnered with Pauseu, a Delhi startup, to turn the launch into a ticketed show.\n\nWe designed an intimate evening around music, postcards, and conversation.\n\nMade the reels, ran Meta ads, and sold tickets via BookMyShow and WhatsApp broadcasts.",
+          videosFirst: true,
+          videos: [
+            { id: "RS5vKebBbSU", portrait: true },
+            { id: "H_lc9QsVUgA", portrait: true },
+          ],
+          images: ["/assets/blanket-wars/event-banner.png"],
+          result: "Delivered two shows. The first at 50% capacity. The second, sold out.",
+          link: {
+            label: "See the event on BookMyShow →",
+            url: "https://in.bookmyshow.com/events/letters-lyrics-latte-home-edition/ET00451501",
+          },
+        },
       ],
-      videos: [{ type: "youtube", id: "A9IijGc-AMU", label: "Blanket Wars" }],
+      keyTakeaway: "Market the stories behind, not just the product.",
       spotifyTrackId: "4UVOaexjzjrr1Il7YfcyQf",
-      extraLinks: [
-        {
-          label: "Buy Tickets — BookMyShow →",
-          url: "https://in.bookmyshow.com/events/letters-lyrics-latte-home-edition/ET00451501",
-        },
-      ],
+      spotifyCopy: "Now that you know the story, here's the song.",
+      songYoutubeUrl: "https://youtu.be/A9IijGc-AMU",
+      spotifyImage: "/assets/blanket-wars/song-concept.jpg",
     },
   },
   {
-    slug: "big-muscles",
-    title: "Ads & Strategy for a Fitness Brand",
-    client: "Big Muscles | Agency: L&K Saatchi & Saatchi, Mumbai",
-    role: "Copywriter / Creative Strategist",
-    categories: ["Ads"],
+    slug: "beato",
+    title: "Built a Timeless Campaign",
+    client: "BeatO — a top 100 health-tech startup in chronic healthcare",
+    role: "Content Strategist and Copywriter",
+    categories: ["Branding", "Campaigns"],
     summary:
-      'Flipped the protein brand narrative from endurance to inner strength — "You\'re stronger than you think" — featuring Ranveer Singh.',
-    coverImage: "/assets/big-muscles/cover.jpg",
+      "Content Strategist and Copywriter — strategy, storytelling, team.",
+    result: "5 years · Still building community",
+    coverImage: "/assets/beato/cover.jpg",
     visible: true,
     content: {
-      tagline: '"You\'re stronger than you think"',
       sections: [
         {
-          heading: "Strategy",
-          body: 'Every protein brand was saying "train longer" — Big Muscles flipped the narrative from endurance to inner strength. The insight: "What really limits you isn\'t your body. It\'s your mind."',
+          heading: "Joining BeatO",
+          body: "Joined BeatO as Content Strategist and Copywriter during COVID, working remotely. Started by auditing the social channels.\n\nEvery post on Instagram and LinkedIn was selling. Glucometers, diabetes friendly snacks, product launches. Just ads, no strategy.\n\nI rewrote the plan. Instagram would tell inspiring stories of people with diabetes. LinkedIn would build credibility for talent and investors.",
         },
         {
-          heading: "The Films",
-          body: "Both films tap into the inner voice — the moment you're about to give up, and the flip to pushing through. Ranveer Singh stars in both.",
+          heading: "My Job",
+          body: "Managed a team of 3 designers and 1 writer. Together we built and ran monthly content calendars across Instagram, LinkedIn, Facebook, YouTube, and Twitter. Briefed the PR agency and reviewed their press releases. Personally wrote brand identity, website and app copy, e-commerce product listings, mobile notifications, SMS, in-app banners, newspaper ads, YouTube ads, and internal comms.\n\nEvery piece had to walk one line. Credible without sounding clinical. Empathetic without sounding fearful. I worked with doctors on medical accuracy, product teams on user flows, marketers on tone. No fear selling. No sanitised jargon. Language a friend would use.",
+        },
+        {
+          heading: "Building BeatO Unbeatables",
+          body: "I was calling BeatO users to understand how they felt about the product. By call one or two, I noticed something else. They had stories to tell.\n\nSo I interviewed them. Wrote each journey as a magazine style Instagram post. Every post ended with proof. HbA1c before BeatO, and now.\n\nReal people. Real problems. Real heroes. Unbeatable in the face of adversity. I called the format BeatO Unbeatables.\n\nInstagram broke its plateau. <1K to 10K under me. Today it's 27K+. The format worked so well we adapted it everywhere. LinkedIn posts. Blog articles. Now it's a video series. Unbeatables also became a central piece of BeatO's investor pitch deck. Five years after I built the format, it's still running. Dozens of stories published.",
+        },
+        {
+          heading: "LinkedIn, Facebook, Twitter, Chatbot",
+          body: "LinkedIn. BeatO Blackboard. Our team was stacked. CXOs from top MBA and engineering colleges, with strong work experience behind them. Blackboard was their thinking on the business topics they knew best. A signal to talent and to seed funders that we had the best of the best.\n\nFacebook. Community building with doctors. Hosted free Zoom Q&As with our experts for anyone following the page. A place to turn when doctors weren't reachable during COVID.\n\nTwitter. Instant updates, viewpoints on COVID, doctor advisories. The news channel.\n\nThe Chatbot. Wrote conversation flows for BeatO's health chatbot. This was before ChatGPT. Basic diagnostics, quick suggestions, routed to a doctor if needed.",
+        },
+        {
+          heading: "What I'm Proudest Of",
+          body: "The community proved one idea. Fitness is a choice. Not age, not diagnosis, not circumstance. And earning the trust of the people I wrote about, sensitive stories told with care. Almost every family thanked me after their story went out.",
         },
       ],
       videos: [
-        { type: "youtube", id: "9jtVAy4pSRA", label: 'Film 1 — "I Can\'t Quit"' },
-        { type: "youtube", id: "dtmY_xwqDlU", label: 'Film 2 — "No More Excuses"' },
-      ],
-    },
-  },
-  {
-    slug: "homelane",
-    title: "Campaigns & Communication for an Interiors Brand",
-    client: "HomeLane",
-    role: "Copywriter / Campaign Lead",
-    categories: ["Ads", "Copy", "Campaigns"],
-    summary:
-      "Wrote and led campaigns across cricket, Valentine's, and Earth Day for India's largest interior design brand.",
-    coverImage: "/assets/homelane/cover.jpg",
-    visible: true,
-    content: {
-      sections: [
-        {
-          heading: "Campaigns",
-          body: "Wrote and led multiple campaigns: HomeLane Valentine's Day, AFC Cricket World Cup 2023, Personalisation Video, HomeLane Luxe, Earth Day.",
-        },
-      ],
-      adCopy: {
-        lines: [
-          "CLEAN DELIVERY — Interior in 45 days or we pay you rent | Packages from ₹3.5L | 0% EMI",
-          "SCORE BIG — with a flat 10-year material warranty (Cricket World Cup tie-in) | Packages from ₹3.5L",
-          "RELAX & ENJOY THE GAME — 0% interest EMI option on Interiors",
-          "Interiors made ~~easy~~ easier — ZERO COST EMI AVAILABLE | 2BHK from ₹3.5L",
-        ],
-      },
-      images: ["/assets/homelane/cover.jpg"],
-    },
-  },
-  {
-    slug: "troost",
-    title: "Ad Film Script & Direction for a Rug Brand",
-    client: "Troost (Troost.in) — handwoven chenille rugs",
-    role: "Ad Film Scriptwriter & Director",
-    categories: ["Ads"],
-    summary:
-      "Wrote the full Hinglish script and directed 6 YouTube ad films for a handwoven rug brand.",
-    coverImage: "/assets/troost/cover.jpg",
-    visible: true,
-    content: {
-      scriptQuote:
-        '"Ye itna spacious kaise lagra hai? Did you sell something?"\n"No yaar. I just replaced our jute rug with a handwoven chenille rug."',
-      sections: [
-        {
-          heading: "The Brief",
-          body: "Troost sells handwoven chenille rugs. Aditya wrote the full Hinglish ad film script and directed 6 video ads.",
-        },
-        {
-          heading: "The Concept — The Spacious Room",
-          body: "Two flatmates. Actor 1 (The Coder) walks into the flat and thinks he's in the wrong house — it looks so different, so spacious. He realises it's because of the new rug.",
-        },
-        {
-          heading: "Product USPs in Script",
-          body: "Machine washable · Fade-resistant colours · 15+ designs · 50% off + free anti-skid rug pad",
-        },
-      ],
-      videos: [
-        { type: "shorts", id: "kutiaQSsiJM", label: "Our best selling rug" },
-        { type: "shorts", id: "WVQICb-OyF4", label: "Tapped it to the floor" },
-        { type: "shorts", id: "3AR0LwkH-kY", label: "Come back story" },
-        { type: "shorts", id: "qKTgHc63SaQ", label: "Investor rejected us" },
-        { type: "shorts", id: "2gv8KC-ZUCA", label: "Customer care" },
-        { type: "shorts", id: "GervzgrnakY", label: "Mummy gussa ho gai" },
+        { type: "youtube", id: "w_7O2hBdSPY", label: "BeatO Unbeatables — Mr. Nagale (Video by BeatO)" },
       ],
       extraLinks: [
-        { label: "Troost on Instagram →", url: "https://www.instagram.com/troostofficial/" },
+        { label: "Read Mr. Nagale's story →", url: "https://www.beatoapp.com/blog/beato-unbeatables-the-journey-of-mr-nagale-an-entrepreneur-who-was-diagnosed-with-diabetes-at-the-age-of-47-years/" },
+        { label: "Read all BeatO Unbeatables →", url: "https://www.beatoapp.com/blog/category/beato-unbeatables/" },
       ],
-    },
-  },
-  {
-    slug: "black-water-bottle",
-    title: "Built a D2C Water Bottle Brand End-to-End",
-    client: "Self (Founder)",
-    role: "Founder — product concept, copy, brand identity, GTM",
-    categories: ["Copy", "Ads"],
-    summary:
-      "39 punchy copy lines, one minimal black bottle brand, real Shopify orders — built from scratch in 6 months.",
-    coverImage: "/assets/black-water-bottle/mockups/thirsty-kya.png",
-    visible: true,
-    content: {
-      sections: [
-        {
-          heading: "What It Is",
-          body: "A DTC e-commerce brand selling premium black water bottles. Each bottle has a different punchy copy line printed on it. The product is as much about the words as the object. Used as a sandbox for AI-driven content workflows.",
-        },
-        {
-          heading: "Brand Identity",
-          body: 'Minimal black-on-black. Logo: "Black Water Bottle Co." Bottles personalised with witty copy — makes hydration a personality statement.',
-        },
-        {
-          heading: "Results",
-          body: "Real Shopify orders confirmed (from order PDFs and GST invoices). Wrote 39 product copy lines, built the brand, got real orders.",
-        },
-      ],
-      images: [
-        "/assets/black-water-bottle/mockups/thirsty-kya.png",
-        "/assets/black-water-bottle/mockups/mere-pass-paani-hai.png",
-        "/assets/black-water-bottle/mockups/water-you-looking-at.png",
-        "/assets/black-water-bottle/mockups/chuglife.png",
-        "/assets/black-water-bottle/mockups/not-vodka-probably.png",
-        "/assets/black-water-bottle/mockups/stay-thirsty.png",
-        "/assets/black-water-bottle/mockups/pa-ni.png",
-        "/assets/black-water-bottle/mockups/og-thirst-trap.png",
-      ],
-      copyLines: {
-        featured: [
-          "Thirsty Kya?",
-          "Mere pass paani hai",
-          "Water You Looking At",
-          "ChugLife",
-          "Not Vodka Probably",
-          "Stay Thirsty, Stay Foolish.",
-          "Pa Ni",
-          "OG Thirst Trap",
-        ],
-        all: [
-          "Thirsty Kya?",
-          "Stay Thirsty, Stay Foolish.",
-          "ChugLife",
-          "OG Thirst Trap",
-          "Not Vodka Probably",
-          "Sip Smile Repeat",
-          "DrinkLikeAMachhli",
-          "Fill Me Up Again",
-          "Mere pass paani hai",
-          "Hello friends paani pilo",
-          "Jal Jeevan hai",
-          "Thanda Matlab Paani",
-          "Piyoge kya?",
-          "Paani peevanu majjani life",
-          "Pa Ni",
-          "Its time for water break",
-          "Water your brain cells",
-          "Water your thoughts",
-          "Water your weekend plans",
-          "Happy clients Water that",
-          "HR support_Water those",
-          "Water the deadlines?",
-          "Water the chances!",
-          "Keep Calm And Drink Water",
-          "Water You Looking At",
-          "Water you drinking?",
-          "Water you saying!!!",
-          "Water you wearing",
-          "Water Your Weaknesses",
-          "Water keeps me sane",
-          "Free Refills Go Nuts",
-          "Caution! Hydrogen Hydroxide Inside",
-          "I love H2O",
-          "4 Reps Daily",
-          "1 Down 3 To Go",
-          "Dont stop till Im empty",
-          "100% self love",
-          "Shut Up And Swallow",
-          "Fill roughly swallow slowly",
-        ],
-      },
     },
   },
   {
     slug: "nexttt-one",
-    title: "COO & Creative Director at a Talent Agency — From the Inside",
-    client: "Nexttt One (Nexttt One Talent Agency, Delhi)",
-    role: "COO & Creative Partner — operations, systems, creative direction, product creation, in-house marketing",
-    categories: ["Ads", "Campaigns"],
+    title: "Business Reboot",
+    client: "Nexttt One Talent Academy & Agency",
+    role: "Business Consultant & Creative Director",
+    categories: ["Campaigns", "Films", "Operations"],
     summary:
-      "Embedded as COO at a ₹18–20L/month talent agency — running operations, writing copy, directing video, building new products, and leading a 12-person team.",
+      "Business Consultant & Creative Director — new revenue lines, performance marketing, operations, 13-member team.",
+    result: "Filled a batch on ₹3,811 of ad spend.",
     coverImage: "/assets/nexttt-one/cover.jpg",
     visible: true,
     content: {
-      sections: [
+      sections: [],
+      nextttChapters: [
         {
-          heading: "The Agency",
-          body: "Based in Chhatarpur, New Delhi. 12-person team across 6 verticals: Models, Ads, Workshop, Portfolio, Academy, Operations. Revenue: ₹18–20L/month | Costs: ~₹15L | Margin: ~₹3–5L. Pivoting from modeling agency → talent + content company.",
+          title: "The Business",
+          blocks: [
+            { kind: "para", text: "**Nexttt One ran two businesses.** Both were in trouble, for different reasons." },
+            { kind: "para", text: "**The modelling business was shrinking.** E-commerce shoots were moving to AI. Ad budgets were shifting towards content creators. Print, hoardings, brand films and fashion shows still had work, but budgets were falling." },
+            { kind: "para", text: "**The academy had no cash flow.** It ran a three month offline modelling course. Once a batch started, there was nothing more to sell until the next admissions." },
+            { kind: "para", text: "**My brief was simple. Make both businesses work.**" },
+            { kind: "para", text: "I worked with a 13 member team across business development, sales, digital marketing, content, finance and operations. Together, we made three decisions that changed how the business worked." },
+            { kind: "list", ordered: true, items: ["Strengthen the agency.", "Strengthen the academy.", "Make every part of the business work together."] },
+          ],
         },
         {
-          heading: "Angle 1 — The Copy Product",
-          body: "Wrote the full brand brief and copy for Nexttt One's first paid workshop, \"Face the Camera\" (July 2026).",
+          eyebrow: "Chapter 1",
+          title: "Strengthen the Agency",
+          blocks: [
+            { kind: "sub", text: "Part A. Sell content, not just models." },
+            { kind: "para", text: "**Brands were buying finished content.** The agency earned only from model bookings, while most of the budget went to production houses. So we started producing and selling in-house UGC content." },
+            { kind: "para", text: "We worked directly with brands to produce creator style videos for social media, opening up a new revenue stream beyond model commissions." },
+            { kind: "para", text: "**Delivered content for five to six brands.**" },
+            {
+              kind: "reels",
+              reels: [
+                { label: "Supply6", url: "https://www.instagram.com/reel/DZHobsLp5zp/", youtube: "L-kP_X8-8Ok" },
+                { label: "Virgio", url: "https://www.instagram.com/reel/DUx2boCDYiZ/" },
+                { label: "Ten x You", url: "https://www.instagram.com/reel/DXJfMIxEViS/" },
+              ],
+            },
+            { kind: "sub", text: "Part B. Reach brands instead of waiting for them." },
+            { kind: "para", text: "**Current clients & referrals weren't enough.** We built an outbound system to reach brands and agencies directly." },
+            { kind: "para", text: "**The outbound system:**" },
+            { kind: "list", items: ["Get contact details from Google Maps", "Reach out through calls, Instagram DMs and emails", "Onboard freelance bookers on commission to scale what worked"] },
+            { kind: "para", text: "I automated data collection from Google Maps, the booking assistant made phone calls, and the social team DMed 10–15 brands a day on Instagram." },
+            { kind: "para", text: "**Almost all UGC clients came through Instagram DMs.**" },
+          ],
         },
         {
-          heading: "Angle 3 — The Strategy",
-          body: "Diagnosed the agency's need to pivot. Wrote a 5-pillar Strategic Reboot document to shift from modeling agency to fashion content & influencer incubator.",
+          eyebrow: "Chapter 2",
+          title: "Strengthen the Academy",
+          blocks: [
+            { kind: "sub", text: "Phase 1. Bring in cashflow." },
+            { kind: "para", text: "**The academy had zero cash flow.** Students paid for the course and portfolio together, but there was no fixed payment schedule. Payments were often delayed, while classes and portfolio shoots continued throughout the course. The business kept spending before it had recovered the course fee." },
+            { kind: "para", text: "**We repackaged the payment structure and the course module.** Students now paid for classes first and the portfolio later. Separating the two made the pricing easier to understand, gave students the flexibility to complete their portfolio later, and helped the academy recover its course fee much earlier." },
+            { kind: "image", src: "/assets/nexttt-one/brochure-batch4.jpg", width: "sm" },
+            { kind: "sub", text: "Phase 2. Fill the next batch." },
+            { kind: "para", text: "**Batch 4 became our first performance marketing campaign.** We scripted, shot and edited three Meta ads in house. Then we A/B tested all of them, and scaled the winner." },
+            {
+              kind: "table",
+              firstHead: "The call",
+              numHeads: ["Cost / lead", "Leads", "Spend"],
+              rows: [
+                { name: "Ad 1 (vid)", status: "Winner", groupBefore: "A/B Test 1", nums: ["₹11.31", "40", "₹453"] },
+                { name: "Ad 2 (vid)", status: "Stopped", stopped: true, nums: ["₹22.64", "9", "₹204"] },
+                { name: "Ad 1 (vid)", status: "Retargeted", groupBefore: "A/B Test 2", nums: ["₹9.09", "99", "₹900"] },
+                { name: "Ad 3 (still)", status: "Stopped", stopped: true, nums: ["₹13.53", "13", "₹176"] },
+                { name: "Ad 1 (vid)", status: "Scaled", groupBefore: "Winner ad", nums: ["₹11.81", "176", "₹2,079"] },
+              ],
+            },
+            { kind: "film", id: "dXEX4jdIZcQ", label: "The winning ad" },
+            { kind: "para", text: "People reached: 83,626 | Leads generated: 337 | Ad spend: ₹3,811" },
+            { kind: "para", text: "**Then we worked the leads.** Every lead went into a tracking sheet. We called them, confirmed attendance for a demo class, followed up, collected advance payments and filled the batch." },
+            { kind: "para", text: "337 Leads | 50 Came for demo | 11 Students enrolled" },
+            { kind: "sub", text: "Phase 3. Sell between batches." },
+            { kind: "para", text: "Once admissions closed, the academy had nothing left to sell for the next three months. So we built two businesses that could run between batches." },
+            { kind: "sub", text: "1. PORTFOLIOS by Nexttt One", deep: true },
+            { kind: "para", text: "**Got our in-house stylist to lead this project.** Together, we fixed the deliverables, pricing, creatives and the freelancers required to run portfolio shoots in our studio. Then launched the portfolio business with two offerings:" },
+            { kind: "list", items: ["The Fresh Face for beginners", "The Nexttt Face for professionals."] },
+            {
+              kind: "carousel",
+              images: [
+                "/assets/nexttt-one/portfolio-deck/1.jpg",
+                "/assets/nexttt-one/portfolio-deck/2.jpg",
+                "/assets/nexttt-one/portfolio-deck/3.jpg",
+                "/assets/nexttt-one/portfolio-deck/4.jpg",
+                "/assets/nexttt-one/portfolio-deck/5.jpg",
+                "/assets/nexttt-one/portfolio-deck/6.jpg",
+                "/assets/nexttt-one/portfolio-deck/7.jpg",
+                "/assets/nexttt-one/portfolio-deck/8.jpg",
+              ],
+            },
+            { kind: "sub", text: "2. Nexttt One Workshops", deep: true },
+            { kind: "para", text: "**Got one of the mentors to lead this project.** Together, we built one workshop module, designed the business around it, and launched it on District by Zomato." },
+            { kind: "image", src: "/assets/nexttt-one/workshop-district-vertical.jpg", width: "sm", caption: "By top models and international mentors. ₹5,000 per person." },
+          ],
+        },
+        {
+          eyebrow: "Chapter 3",
+          title: "Make every part work together",
+          blocks: [
+            { kind: "sub", text: "1. One studio. Shared in a weekly rhythm." },
+            { kind: "para", text: "The same studio, mentors and creative team powered every offering." },
+            {
+              kind: "week",
+              rows: [
+                { day: "Monday", what: "Portfolio levelling, styling and polaroids" },
+                { day: "Tuesday", what: "Portfolio shoot day. Five people maximum" },
+                { day: "Wednesday & Thursday", what: "Workshops" },
+                { day: "Friday", what: "Scouting and demo classes" },
+                { day: "Saturday & Sunday", what: "Academy classes" },
+              ],
+            },
+            { kind: "sub", text: "2. Every offering served a bigger purpose." },
+            { kind: "para", text: "The workshop and portfolio brought people in. Freshers were introduced to the academy, while professionals were scouted for the agency." },
+          ],
         },
       ],
-      workshopCopy:
-        "You already have the look. The camera already notices you. But the moment a photographer gives you a direction — or a director calls action — something shifts. You overthink. You go stiff. You lose the version of yourself that makes people stop scrolling. This workshop exists for that gap.\n\nTagline: \"You already have the look. This weekend, you get the skill.\"\n\nWorkshop details: ₹5,000 | 2 days | 15 seats | Chhatarpur, New Delhi",
-      metaResults: [
-        { label: "Video A — Leads", value: "11 leads @ ₹16.46/lead" },
-        { label: "Video A — Spend", value: "₹181.16 | 3,929 impressions" },
-        { label: "Video B — Leads", value: "1 lead @ ₹37.62/lead" },
-        { label: "Performance", value: "Video A performed 2.3x better per rupee" },
-      ],
-      strategyPillars: [
-        "Influencer Module Upsell (NTA upgrade)",
-        "Masterclasses at Fashion Colleges (NIFT, Pearl Academy, AAFT)",
-        "Performance Models for digital video ads",
-        "Shoot-at-Sight Bundles (flat-rate Reels packages)",
-        "White-Label Fashion Show Curation",
-      ],
-      videos: [
-        { type: "shorts", id: "dXEX4jdIZcQ", label: "NTA Batch 4 closing soon!" },
-      ],
+      keyTakeaway: "We trained talent on one end and got them work on the other.",
       extraLinks: [
-        { label: "Nexttt One Website →", url: "https://www.nextttone.com/" },
+        { label: "Nexttt One (Homepage) →", url: "https://www.nextttone.com/" },
         { label: "Instagram (Academy) →", url: "https://www.instagram.com/nextttone.talent.academy/" },
-        { label: "Instagram (Main) →", url: "https://www.instagram.com/nexttt.one/" },
+        { label: "Instagram (Agency) →", url: "https://www.instagram.com/nexttt.one/" },
       ],
     },
   },

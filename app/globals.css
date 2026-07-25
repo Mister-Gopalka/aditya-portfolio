@@ -2,8 +2,8 @@
 
 :root {
   --color-offwhite: #FFF8F3;
-  --color-coral: #E8604A;
-  --color-amber: #F4A435;
+  --color-coral: #A0281A;
+  --color-amber: #C9956A;
   --color-skyblue: #A8D5E8;
   --color-brown: #1C0A00;
 }
@@ -60,3 +60,81 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-backface-visibility: hidden;
 }
 .flip-card-back { transform: rotateY(180deg); }
+
+/* ---------- V2 — "The Reel" ---------- */
+:root {
+  /* The cinematic ground colour — single source of truth for the dark theme.
+     Candidates: espresso #120600 · charcoal #0E0E0E · mahogany #170805 · midnight #0A0D12 */
+  --v2-ground: #120600;
+}
+.v2-root {
+  font-family: var(--font-space-grotesk), "DM Sans", sans-serif;
+  background-color: var(--v2-ground);
+  /* per-scene accent — overridden by each project scene's theme */
+  --scene-accent: #c9956a;
+}
+.v2-root h1,
+.v2-root h2,
+.v2-root h3,
+.v2-root h4 {
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+/* Scroll reveal */
+.v2-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v2-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* Ticker marquee */
+.v2-marquee {
+  display: inline-block;
+  animation: v2-marquee 45s linear infinite;
+}
+@keyframes v2-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Scroll cue bounce */
+.v2-bounce {
+  transform: translateX(-50%);
+  animation: v2-bounce 2.2s ease-in-out infinite;
+}
+@keyframes v2-bounce {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 8px);
+  }
+}
+
+/* Slow cinematic zoom on scene hover */
+.v2-scene-img {
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v2-scene:hover .v2-scene-img {
+  transform: scale(1.05);
+}
+
+/* Hide scrollbar but keep scroll functional */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Hero photo — mobile override to show face */
+@media (max-width: 767px) {
+  .hero-photo {
+    object-position: 55% 12% !important;
+    transform: scale(1.4) !important;
+    transform-origin: 55% 12% !important;
+  }
+}

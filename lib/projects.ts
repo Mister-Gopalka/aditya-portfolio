@@ -572,7 +572,7 @@ export const projects: Project[] = [
     categories: ["Films", "Campaigns", "Operations"],
     summary:
       "Independent Artist — community building, multi-platform marketing, ticketed live show.",
-    result: "Curated 2 live shows. Song featured on YouTube's New Releases.",
+    result: "Song featured on YouTube's New Releases. Curated a sold out live show.",
     coverImage: "/assets/blanket-wars/cover.jpg",
     visible: true,
     content: {

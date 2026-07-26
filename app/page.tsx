@@ -262,7 +262,7 @@ export default async function HomePage() {
       </div>
 
       {/* Header — wordmark + WhatsApp logo only (over the dark hero) */}
-      <header className="absolute top-6 md:top-10 inset-x-0 z-20 flex items-center justify-between px-6 md:px-12 py-3 md:py-5">
+      <header className="absolute top-10 inset-x-0 z-20 flex items-center justify-between px-6 md:px-12 py-5">
         <a
           href="mailto:mistergopalka@gmail.com"
           aria-label="Email Aditya Gopalka"
@@ -275,7 +275,7 @@ export default async function HomePage() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="WhatsApp"
-          className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border border-[#FFF8F3]/25 text-[#FFF8F3] hover:bg-[#A0281A] hover:border-[#A0281A] transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-full border border-[#FFF8F3]/25 text-[#FFF8F3] hover:bg-[#A0281A] hover:border-[#A0281A] transition-colors"
         >
           <WhatsAppIcon />
         </a>
@@ -300,9 +300,9 @@ export default async function HomePage() {
 
         {/* Kicker — printed in espresso ink on the light wall, echoing the
             ticker band, on every screen size. Positioned above the hairline. */}
-        <div className="absolute top-14 md:top-36 inset-x-0 z-10 px-6 md:px-12">
+        <div className="absolute top-20 md:top-36 inset-x-0 z-10 px-6 md:px-12">
           <Reveal>
-            <p className="text-xs md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-[1.15] md:leading-snug text-[#120600]">
+            <p className="text-xs md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-snug text-[#120600]">
               Shaping&nbsp;brands, people&nbsp;&amp;&nbsp;life into&nbsp;stories since&nbsp;2015
             </p>
           </Reveal>

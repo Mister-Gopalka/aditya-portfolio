@@ -53,16 +53,6 @@ export default function LiteYouTube({ videoId, title }: Props) {
           <path d="M8 5.14v13.72L19 12 8 5.14z" />
         </svg>
       </span>
-
-      {/* YouTube corner mark — matches the branding shown on a real, un-played
-          YouTube embed, confirming this is an inline player. */}
-      <span className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/60 backdrop-blur-sm">
-        <svg width="16" height="12" viewBox="0 0 28 20" aria-hidden="true">
-          <rect width="28" height="20" rx="5" fill="#FF0000" />
-          <path d="M11 5.5v9l8-4.5-8-4.5z" fill="#FFFFFF" />
-        </svg>
-        <span className="text-[11px] font-medium text-white tracking-wide">YouTube</span>
-      </span>
     </button>
   );
 }

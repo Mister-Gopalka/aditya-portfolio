@@ -309,26 +309,14 @@ export default async function HomePage() {
         </div>
 
         <div className="relative z-10 w-full px-6 md:px-12 pb-24 text-[#FFF8F3]">
-          <Reveal delay={100}>
-            <h1
-              style={{
-                fontFamily: "var(--font-fraunces)",
-                textShadow: "0 4px 28px rgba(0,0,0,0.6)",
-              }}
-              className="font-semibold text-[clamp(3.2rem,9.5vw,8rem)] leading-[0.95] tracking-tight text-[#FFF8F3] mb-8"
-            >
-              Aditya
-              <br />
-              Gopalka
-            </h1>
-          </Reveal>
+          <h1 className="sr-only">Aditya Gopalka</h1>
           <Reveal delay={200}>
-            <p
-              className="text-xs md:text-sm uppercase tracking-[0.3em] text-[#FFF8F3]/95 mb-8"
+            <h2
+              className="text-xs md:text-sm uppercase tracking-[0.3em] text-[#FFF8F3]/95 mb-8 font-normal"
               style={{ textShadow: "0 2px 16px rgba(0,0,0,0.85)" }}
             >
               Creative{" "}Director · Brand{" "}Manager · Fractional{" "}CMO
-            </p>
+            </h2>
           </Reveal>
           <Reveal delay={300}>
             <div

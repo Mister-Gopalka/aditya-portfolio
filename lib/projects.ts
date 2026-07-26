@@ -572,7 +572,7 @@ export const projects: Project[] = [
     categories: ["Films", "Campaigns", "Operations"],
     summary:
       "Independent Artist — community building, multi-platform marketing, ticketed live show.",
-    result: "Landed on YouTube New Releases, next to Ed Sheeran",
+    result: "Curated 2 live shows. Song featured on YouTube's New Releases.",
     coverImage: "/assets/blanket-wars/cover.jpg",
     visible: true,
     content: {

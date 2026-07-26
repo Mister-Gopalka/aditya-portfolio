@@ -300,9 +300,9 @@ export default async function HomePage() {
 
         {/* Kicker — printed in espresso ink on the light wall, echoing the
             ticker band, on every screen size. Positioned above the hairline. */}
-        <div className="absolute top-20 md:top-36 inset-x-0 z-10 px-6 md:px-12">
+        <div className="absolute top-16 md:top-36 inset-x-0 z-10 px-6 md:px-12">
           <Reveal>
-            <p className="text-xs md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-snug text-[#120600]">
+            <p className="text-[11px] md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-[1.15] md:leading-snug text-[#120600]">
               Shaping&nbsp;brands, people&nbsp;&amp;&nbsp;life into&nbsp;stories since&nbsp;2015
             </p>
           </Reveal>

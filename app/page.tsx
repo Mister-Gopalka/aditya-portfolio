@@ -299,10 +299,25 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#120600] via-[#120600]/65 to-[#120600]/25" />
 
         {/* Kicker — printed in espresso ink on the light wall, echoing the
-            ticker band, on every screen size. Positioned above the hairline. */}
+            ticker band, on every screen size. Positioned above the hairline.
+            Highlighted like a hand-marked highlighter stroke: asymmetric
+            corners + slight rotation + uneven padding fake the imperfection;
+            box-decoration-break lets each wrapped line get its own shape. */}
         <div className="absolute top-16 md:top-36 inset-x-0 z-10 px-6 md:px-12">
           <Reveal>
-            <p className="text-[11px] md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-[1.15] md:leading-snug text-[#120600]">
+            <p
+              className="inline text-[11px] md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-[1.15] md:leading-snug text-[#120600]"
+              style={{
+                background: "rgba(201, 149, 106, 0.48)",
+                borderRadius: "2px 11px 4px 13px / 9px 3px 11px 4px",
+                padding: "4px 11px 4px 7px",
+                transform: "rotate(-0.7deg)",
+                boxShadow:
+                  "2px 1.5px 0 -0.5px rgba(201, 149, 106, 0.3), 0 0 0 0.5px rgba(201, 149, 106, 0.2)",
+                WebkitBoxDecorationBreak: "clone",
+                boxDecorationBreak: "clone",
+              }}
+            >
               Shaping&nbsp;brands, people&nbsp;&amp;&nbsp;life into&nbsp;stories since&nbsp;2015
             </p>
           </Reveal>

@@ -268,7 +268,7 @@ export default async function HomePage() {
           aria-label="Email Aditya Gopalka"
           className="font-bold tracking-tight text-lg text-[#FFF8F3] hover:text-[#A0281A] transition-colors"
         >
-          MisterGopalka
+          AdityaGopalka
         </a>
         <a
           href={WHATSAPP_URL}

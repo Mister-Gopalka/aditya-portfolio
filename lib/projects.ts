@@ -301,7 +301,7 @@ export const projects: Project[] = [
       sections: [
         {
           heading: "My Role",
-          body: "One of India's biggest interiors brands, HomeLane spoke in many formats. My job was to keep the voice the same.\n\nAll ads and brand communications were routed through me for the final edit. I pitched ideas, built campaigns, wrote performance ads, the website copy, and supervised a team of 3 designers.\n\nI owned every message a customer got. From the first reply after an ad click, to the purchase, to the service offer after one year. Every email, every WhatsApp.",
+          body: "One of India's biggest interiors brands, HomeLane spoke through many channels. [[I kept the voice one.]]\n\nAll ads and brand communications were routed through me for the final edit. I pitched ideas, built campaigns, wrote performance ads, the website copy, and supervised a team of 3 designers.\n\nI owned every message a customer got. From the first reply after an ad click, to the purchase, to the service offer after one year. Every email, every WhatsApp.",
         },
       ],
       homelane: {

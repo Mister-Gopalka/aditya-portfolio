@@ -2,16 +2,12 @@
   <!-- Circular background in brown -->
   <circle cx="60" cy="60" r="60" fill="#1C0A00"/>
 
-  <!-- Initials "AG" in Playfair Display, offwhite -->
-  <text
-    x="60"
-    y="60"
-    font-family="Playfair Display, serif"
-    font-size="56"
-    font-weight="700"
-    text-anchor="middle"
-    dominant-baseline="middle"
-    fill="#FFF8F3"
-    letter-spacing="-2"
-  >AG</text>
+  <!-- Sun rays (4 cardinal directions) -->
+  <line x1="60" y1="24" x2="60" y2="36" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
+  <line x1="60" y1="84" x2="60" y2="96" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="60" x2="36" y2="60" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
+  <line x1="84" y1="60" x2="96" y2="60" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Centered dot (the sun) -->
+  <circle cx="60" cy="60" r="4" fill="#FFF8F3"/>
 </svg>

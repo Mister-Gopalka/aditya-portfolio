@@ -318,7 +318,7 @@ export default async function HomePage() {
                 boxDecorationBreak: "clone",
               }}
             >
-              Shaping&nbsp;brands, people&nbsp;&amp;&nbsp;life into&nbsp;stories since&nbsp;2015
+              Shaping&nbsp;brands, people&nbsp;&amp;&nbsp;life into&nbsp;stories since&nbsp;2015.
             </p>
           </Reveal>
         </div>

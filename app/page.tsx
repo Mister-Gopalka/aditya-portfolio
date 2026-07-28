@@ -264,8 +264,8 @@ export default async function HomePage() {
       {/* Header — wordmark + WhatsApp logo only (over the dark hero) */}
       <header className="absolute top-10 inset-x-0 z-20 flex items-center justify-between px-6 md:px-12 py-5">
         <a
-          href="mailto:mistergopalka@gmail.com"
-          aria-label="Email Aditya Gopalka"
+          href="/"
+          aria-label="Back to top"
           className="font-bold tracking-tight text-lg text-[#FFF8F3] hover:text-[#A0281A] transition-colors"
         >
           AdityaGopalka

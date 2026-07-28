@@ -5,7 +5,7 @@
   <!-- Initials "AG" in Playfair Display, offwhite -->
   <text
     x="60"
-    y="75"
+    y="60"
     font-family="Playfair Display, serif"
     font-size="56"
     font-weight="700"

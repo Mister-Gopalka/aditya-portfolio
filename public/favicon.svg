@@ -2,12 +2,26 @@
   <!-- Circular background in brown -->
   <circle cx="60" cy="60" r="60" fill="#1C0A00"/>
 
-  <!-- Sun rays (4 cardinal directions) -->
-  <line x1="60" y1="24" x2="60" y2="36" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
-  <line x1="60" y1="84" x2="60" y2="96" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
-  <line x1="24" y1="60" x2="36" y2="60" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
-  <line x1="84" y1="60" x2="96" y2="60" stroke="#FFF8F3" stroke-width="2" stroke-linecap="round"/>
+  <!-- 4 Main rays (cardinal directions) - larger -->
+  <!-- Top (0°) -->
+  <polygon points="60,15 54,34 66,34" fill="#E8604A"/>
+  <!-- Right (90°) -->
+  <polygon points="105,60 86,54 86,66" fill="#E8604A"/>
+  <!-- Bottom (180°) -->
+  <polygon points="60,105 66,86 54,86" fill="#E8604A"/>
+  <!-- Left (270°) -->
+  <polygon points="15,60 34,54 34,66" fill="#E8604A"/>
 
-  <!-- Centered dot (the sun) -->
-  <circle cx="60" cy="60" r="4" fill="#FFF8F3"/>
+  <!-- 4 Smaller rays (diagonal directions) - same triangle shape, rotated -->
+  <!-- Top-right (45°) -->
+  <polygon points="92,28 74,37 83,46" fill="#E8604A"/>
+  <!-- Bottom-right (135°) -->
+  <polygon points="92,92 83,74 74,83" fill="#E8604A"/>
+  <!-- Bottom-left (225°) -->
+  <polygon points="28,92 46,83 37,74" fill="#E8604A"/>
+  <!-- Top-left (315°) -->
+  <polygon points="28,28 37,46 46,38" fill="#E8604A"/>
+
+  <!-- Central sun circle (amber) -->
+  <circle cx="60" cy="60" r="22" fill="#F4A435"/>
 </svg>

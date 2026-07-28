@@ -1,0 +1,17 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circular background in brown -->
+  <circle cx="60" cy="60" r="60" fill="#1C0A00"/>
+
+  <!-- Initials "AG" in Playfair Display, offwhite -->
+  <text
+    x="60"
+    y="75"
+    font-family="Playfair Display, serif"
+    font-size="56"
+    font-weight="700"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    fill="#FFF8F3"
+    letter-spacing="-2"
+  >AG</text>
+</svg>

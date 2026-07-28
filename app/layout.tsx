@@ -117,6 +117,11 @@ export const metadata: Metadata = {
       "Brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, and more.",
     images: ["/assets/aditya-photo.jpg"],
   },
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+
 };
 
 export default async function RootLayout({

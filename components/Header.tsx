@@ -7,7 +7,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-[#FFF8F3]/90 backdrop-blur-sm border-b border-[#1C0A00]/8">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         <a href="mailto:mistergopalka@gmail.com" className="font-heading text-lg font-bold text-[#1C0A00] tracking-tight hover:text-[#A0281A] transition-colors">
-          MisterGopalka
+          AdityaGopalka
         </a>
         <a
           href={whatsappUrl}

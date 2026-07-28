@@ -193,7 +193,7 @@ export default async function ProjectPage({
       {/* Header — same language as the reel */}
       <header className="absolute top-0 inset-x-0 z-20 flex items-center justify-between px-6 md:px-12 py-5">
         <Link href="/" className="font-bold tracking-tight text-lg hover:text-[#A0281A] transition-colors">
-          MisterGopalka
+          AdityaGopalka
         </Link>
         <a
           href={whatsappUrl}

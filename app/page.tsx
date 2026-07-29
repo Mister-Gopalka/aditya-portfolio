@@ -85,7 +85,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       className="scroll-mt-24 px-5 md:px-6 py-6 md:py-10 flex justify-center"
     >
       <SwipeCard href={`/projects/${project.slug}`}>
-        <article className="group relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-[#FFF8F3]/12 bg-[#FFF8F3]/[0.05] backdrop-blur-md shadow-[0_32px_70px_-18px_rgba(0,0,0,0.85)]">
+        {/* Dark glass, not white glass. The card now travels over the photo,
+            whose wall is bright, so a 5% white tint would lose the copy. The
+            tint lives in --v2-card-tint (app/globals.css) — one line to dial.
+
+            The blur is md: only, deliberately. On iOS Safari a backdrop-filter
+            whose backdrop is position:fixed drops the element's children and
+            the card renders blank; mobile uses a near-solid tint instead. */}
+        <article className="group relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-[#FFF8F3]/12 bg-[var(--v2-card-tint)] md:backdrop-blur-lg shadow-[0_32px_70px_-18px_rgba(0,0,0,0.85)]">
           {/* Glossy top sheen — laminated paper, not wet glass */}
           <span className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/8 to-transparent" />
 
@@ -253,12 +260,62 @@ export default async function HomePage() {
       />
       <SideNav />
 
-      {/* Brand ticker — the credits strip, at the very top */}
-      <div className="overflow-hidden py-2.5 border-b border-[#FFF8F3]/10">
+      {/* The fixed stage — the hero photo and its gradient, unchanged, but
+          pinned behind the entire page instead of scrolling away. Everything
+          else travels over it.
+
+          Two deliberate choices here:
+          · It is a top-level child of <main>. Any ancestor with transform,
+            filter, backdrop-filter or perspective becomes the containing block
+            for a fixed descendant and would break the pinning. The kicker's
+            rotate() and the cards' backdrop-blur are both below this in the
+            tree, never above it.
+          · Height is 100lvh (largest viewport height), not svh/dvh, so the
+            layer does not resize when iOS Safari's address bar collapses.
+            A resizing layer would make the photo jump mid-scroll. */}
+      <div className="fixed inset-x-0 top-0 z-0 h-[100lvh] overflow-hidden bg-[#120600]">
+        <Image
+          src="/assets/aditya-photo.jpg"
+          alt="Aditya Gopalka — Creative Director, Delhi"
+          fill
+          className="object-cover"
+          style={{ objectPosition: "68% 12%" }}
+          priority
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#120600] via-[#120600]/65 to-[#120600]/25" />
+      </div>
+
+      {/* Everything that scrolls, in one layer above the stage */}
+      <div className="relative z-10">
+
+      {/* Brand ticker — the credits strip, pinned for the whole page.
+
+          Fixed, not sticky. Sticky repositions on the main thread, so during
+          iOS momentum scrolling it visibly lags and jumps. The photo stage
+          above is position:fixed and stays rock steady on the same device, so
+          the ticker uses the mechanism that demonstrably works there.
+
+          Because it is fixed it leaves the layout flow, so the placeholder
+          below reserves its height. Without that, every element on the page
+          rides up by the ticker's height and the hero kicker collides with
+          the wordmark. The placeholder mirrors the ticker's box exactly
+          rather than hard-coding a pixel value, so it stays correct if the
+          type or padding ever changes. */}
+      <div className="fixed top-0 inset-x-0 z-40 overflow-hidden py-2.5 border-b border-[#FFF8F3]/10 bg-[#120600]">
         <div className="v2-marquee whitespace-nowrap text-[11px] uppercase tracking-[0.25em] text-[#FFF8F3]/40">
           {tickerLine}
           {tickerLine}
         </div>
+      </div>
+
+      {/* The ticker's stand-in in the flow. Same box — same padding, same
+          border, same inline-block child at the same type size — so it
+          resolves to the identical height without a hard-coded number. */}
+      <div aria-hidden="true" className="invisible overflow-hidden py-2.5 border-b border-[#FFF8F3]/10">
+        <span className="inline-block whitespace-nowrap text-[11px] uppercase tracking-[0.25em]">
+          &nbsp;
+        </span>
       </div>
 
       {/* Header — wordmark + WhatsApp logo only (over the dark hero) */}
@@ -281,23 +338,14 @@ export default async function HomePage() {
         </a>
       </header>
 
-      {/* Hero — the dark cover of the monograph */}
+      {/* Hero — the dark cover of the monograph. The photo and gradient now
+          live in the fixed stage above; this section is transparent and holds
+          only the text, which scrolls up and away as normal. */}
       <section
         id="top"
         data-nav-label="Top"
-        className="relative min-h-[94svh] flex items-end overflow-hidden bg-[#120600]"
+        className="relative min-h-[94svh] flex items-end"
       >
-        <Image
-          src="/assets/aditya-photo.jpg"
-          alt="Aditya Gopalka — Creative Director, Delhi"
-          fill
-          className="object-cover"
-          style={{ objectPosition: "68% 12%" }}
-          priority
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#120600] via-[#120600]/65 to-[#120600]/25" />
-
         {/* Kicker — printed in espresso ink on the light wall, echoing the
             ticker band, on every screen size. Positioned above the hairline.
             Highlighted like a hand-marked highlighter stroke: asymmetric
@@ -379,6 +427,8 @@ export default async function HomePage() {
         <p className="text-center text-xs text-[#FFF8F3]/30 py-8">
           © {new Date().getFullYear()} · Built by Aditya Gopalka
         </p>
+      </div>
+
       </div>
     </main>
   );

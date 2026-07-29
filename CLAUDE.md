@@ -7,9 +7,8 @@ maintenance work, not a build.
 
 ## 1. What this site is for
 
-**This site exists to get Aditya hired** — as a Creative Director, Brand
-Manager, or Fractional CMO — by companies, founders, and agencies evaluating
-him.
+**This site is for getting Aditya hired as a Creative Director, Brand Manager,
+or Fractional CMO.**
 
 The reader is a hiring manager or founder with very little time, deciding one
 thing: *can this person own creative and deliver business outcomes?*

@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 :root {
+  /* Only these two are actually used (by body{} below — relevant to /admin,
+     which sits outside .v2-root, and to what iOS overscroll-bounce reveals
+     at the very top/bottom of the page). --color-coral/amber/skyblue were
+     never referenced anywhere and have been removed. */
   --color-offwhite: #FFF8F3;
-  --color-coral: #A0281A;
-  --color-amber: #C9956A;
-  --color-skyblue: #A8D5E8;
   --color-brown: #1C0A00;
 }
 
@@ -90,8 +91,6 @@ h1, h2, h3, h4, h5, h6 {
 .v2-root {
   font-family: var(--font-space-grotesk), "DM Sans", sans-serif;
   background-color: var(--v2-ground);
-  /* per-scene accent — overridden by each project scene's theme */
-  --scene-accent: #c9956a;
 }
 .v2-root h1,
 .v2-root h2,

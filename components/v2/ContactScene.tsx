@@ -85,7 +85,7 @@ export default function ContactScene() {
         <Reveal>
           <p className="mb-6">
             <span
-              className="inline uppercase tracking-[0.3em] text-xs font-medium text-[#120600]"
+              className="inline uppercase tracking-[0.3em] text-xs font-medium text-(--v2-ground)"
               style={{
                 background: "rgba(201, 149, 106, 0.48)",
                 borderRadius: "2px 11px 4px 13px / 9px 3px 11px 4px",

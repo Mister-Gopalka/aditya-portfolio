@@ -249,8 +249,13 @@ export default async function HomePage() {
     <main
       className="v2-root min-h-screen text-[#FFF8F3]"
       style={{
+        // Sits directly behind the fixed photo stage below, which is pinned
+        // to the viewport and exactly fills it at every scroll position — so
+        // this gradient never actually paints. Kept as a fallback (e.g. before
+        // the stage image loads) and because removing it is a bigger, less
+        // obviously reversible change than this file's other edits.
         background:
-          "radial-gradient(140% 100% at 50% 0%, #1A0C04 0%, #120600 45%, #0B0300 100%)",
+          "radial-gradient(140% 100% at 50% 0%, #1A0C04 0%, var(--v2-ground) 45%, #0B0300 100%)",
       }}
     >
       <Script
@@ -273,7 +278,7 @@ export default async function HomePage() {
           · Height is 100lvh (largest viewport height), not svh/dvh, so the
             layer does not resize when iOS Safari's address bar collapses.
             A resizing layer would make the photo jump mid-scroll. */}
-      <div className="fixed inset-x-0 top-0 z-0 h-[100lvh] overflow-hidden bg-[#120600]">
+      <div className="fixed inset-x-0 top-0 z-0 h-[100lvh] overflow-hidden bg-(--v2-ground)">
         <Image
           src="/assets/aditya-photo.jpg"
           alt="Aditya Gopalka — Creative Director, Delhi"
@@ -283,7 +288,7 @@ export default async function HomePage() {
           priority
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#120600] via-[#120600]/65 to-[#120600]/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-(--v2-ground) via-(--v2-ground)/65 to-(--v2-ground)/25" />
       </div>
 
       {/* Everything that scrolls, in one layer above the stage */}
@@ -302,7 +307,7 @@ export default async function HomePage() {
           the wordmark. The placeholder mirrors the ticker's box exactly
           rather than hard-coding a pixel value, so it stays correct if the
           type or padding ever changes. */}
-      <div className="fixed top-0 inset-x-0 z-40 overflow-hidden py-2.5 border-b border-[#FFF8F3]/10 bg-[#120600]">
+      <div className="fixed top-0 inset-x-0 z-40 overflow-hidden py-2.5 border-b border-[#FFF8F3]/10 bg-(--v2-ground)">
         <div className="v2-marquee whitespace-nowrap text-[11px] uppercase tracking-[0.25em] text-[#FFF8F3]/40">
           {tickerLine}
           {tickerLine}
@@ -354,7 +359,7 @@ export default async function HomePage() {
         <div className="absolute top-16 md:top-36 inset-x-0 z-10 px-6 md:px-12">
           <Reveal>
             <p
-              className="inline text-[11px] md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-[1.15] md:leading-snug text-[#120600]"
+              className="inline text-[11px] md:text-sm font-medium uppercase tracking-[0.2em] md:tracking-[0.3em] leading-[1.15] md:leading-snug text-(--v2-ground)"
               style={{
                 background: "rgba(201, 149, 106, 0.48)",
                 borderRadius: "2px 11px 4px 13px / 9px 3px 11px 4px",

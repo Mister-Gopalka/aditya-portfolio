@@ -57,10 +57,14 @@ never skip *approval before push*.
 These are settled. Do not drift from them without being asked.
 
 - **Fonts:** Fraunces (display, `var(--font-fraunces)`) + Space Grotesk (body).
-- **Colour roles:** dark ground `--v2-ground` · body text `#FFF8F3` at ~75%
-  opacity · **gold `#C9956A`** for eyebrows, phase headings, result lines,
-  numerals and badges · orange `#E85D45` for `[[accent]]` words · full-white
-  `#FFF8F3` semibold for `**highlighted**` skim leads.
+- **Colour roles:** body text `#FFF8F3` at ~75% opacity · **gold `#C9956A`**
+  for eyebrows, phase headings, result lines, numerals and badges · orange
+  `#E85D45` for `[[accent]]` words · full-white `#FFF8F3` semibold for
+  `**highlighted**` skim leads. These are settled and written directly as hex.
+- **The dark ground is the one colour that must never be hardcoded.** Always
+  reference `--v2-ground` (`bg-(--v2-ground)`, `var(--v2-ground)` in inline
+  styles) rather than typing `#120600`. It is the one colour still open to
+  being swapped, and a hardcoded copy will not update if it is.
 - **Voice — "Bare Bones":** problem first, then fact, then action. Short
   sentences. No em-dashes in body copy. No self-praising adjectives. Precise
   about ownership, specific with credit. Default for all project body copy.

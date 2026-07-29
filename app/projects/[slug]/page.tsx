@@ -142,6 +142,15 @@ export default async function ProjectPage({
   const performanceAds = project.slug === "homelane" ? getPerformanceAds() : [];
 
   const SITE = "https://www.adityagopalka.com";
+  // project.year is what's visible on the page ("2024" or "2023 – 2024").
+  // temporalCoverage is schema.org's property for "the period this work
+  // describes" — a single year stays as-is, a range becomes an ISO-8601
+  // interval ("2023/2024"). Deliberately derived from the same string that's
+  // rendered, not a separate value — the markup should never claim more
+  // precision than the page shows.
+  const temporalCoverage = project.year.includes("–")
+    ? project.year.split("–").map((y) => y.trim()).join("/")
+    : project.year;
   const projectSchema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -152,6 +161,7 @@ export default async function ProjectPage({
         abstract: project.summary,
         about: project.client,
         genre: project.categories,
+        temporalCoverage,
         url: `${SITE}/projects/${project.slug}`,
         image: `${SITE}${project.coverImage}`,
         author: {
@@ -255,6 +265,10 @@ export default async function ProjectPage({
             <p className="text-sm text-[#FFF8F3]/55 mt-1">
               <span className="text-[#FFF8F3]/35">Role — </span>
               {project.role}
+            </p>
+            <p className="text-sm text-[#FFF8F3]/55 mt-1">
+              <span className="text-[#FFF8F3]/35">Year — </span>
+              {project.year}
             </p>
           </Reveal>
           {content.tagline && (

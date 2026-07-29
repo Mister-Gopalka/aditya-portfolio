@@ -13,6 +13,11 @@ export type Project = {
   title: string;
   client: string;
   role: string;
+  /** A single year ("2024") or a range ("2023 – 2024"). Never a month —
+   *  see HANDOFF.md for why. Renders as "Year — …" on the project page,
+   *  directly under Role, and feeds the same date into the page's
+   *  structured data. Not shown on the homepage card. */
+  year: string;
   categories: Category[];
   summary: string;
   result?: string;
@@ -98,6 +103,7 @@ export const projects: Project[] = [
     title: "Turning 7 Scripts Into 7 Reels in One Day",
     client: "Troost — a handwoven chenille rug brand",
     role: "Creative Director",
+    year: "2026",
     categories: ["Films"],
     summary:
       "Creative Director — screenplay, casting, shoot, delivery.",
@@ -146,6 +152,7 @@ export const projects: Project[] = [
     title: "My Third Film With VCF: The Making of 12th Fail",
     client: "Vinod Chopra Films",
     role: "Creative Associate",
+    year: "2024 – 2025",
     categories: ["Films"],
     summary:
       "Creative Associate — writing, directing, marketing.",
@@ -202,6 +209,7 @@ export const projects: Project[] = [
     title: "Wrote the Tagline and TVC Scripts for Big Muscles",
     client: "L&K Saatchi & Saatchi",
     role: "Senior Copywriter",
+    year: "2018",
     categories: ["Campaigns", "Films"],
     summary:
       "Senior Copywriter — strategy, tagline, films.",
@@ -235,6 +243,7 @@ export const projects: Project[] = [
     title: "A Viral Campaign That Got Couples A Room",
     client: "OYO Rooms",
     role: "Copywriter",
+    year: "2015 – 2016",
     categories: ["Campaigns"],
     summary: "Copywriter — strategy, concept, copy.",
     result: "Launched Couple-Friendly OYOs · Crossed 250K+ bookings/month",
@@ -292,6 +301,7 @@ export const projects: Project[] = [
     title: "Built Ads That Drove Revenue and Brand Equity",
     client: "HomeLane",
     role: "Creative Supervisor, Copy",
+    year: "2023 – 2024",
     categories: ["Branding", "Campaigns", "Operations"],
     summary: "Creative Supervisor — campaigns, sub-brand launches, performance ads.",
     result: "1.2 years · 10+ campaigns · 2 sub-brands",
@@ -370,6 +380,7 @@ export const projects: Project[] = [
     title: "Scaling a Political Campaign to 16M Views in 60 Days",
     client: "Birender Kanodia — MP candidate, Nepal General Election 2026",
     role: "Digital Campaign Lead",
+    year: "2026",
     categories: ["Films", "Campaigns", "Operations"],
     summary: "Digital Campaign Lead — strategy, content, distribution, 12-member team.",
     result: "1.9M views on the campaign's final day",
@@ -477,6 +488,7 @@ export const projects: Project[] = [
     title: "Made a Complex Geospatial SaaS Easy to Sell",
     client: "Lepton Software",
     role: "Marketing Consultant",
+    year: "2024",
     categories: ["Branding", "Films"],
     summary: "Marketing Consultant — branding, sales pitch, client outreach.",
     result: "SaaS used by Airtel, Vodafone, HDFC, Zomato and more.",
@@ -569,6 +581,7 @@ export const projects: Project[] = [
     title: "Released and Marketed My Own Song",
     client: "Aditya Gopalka",
     role: "Independent Artist",
+    year: "2025",
     categories: ["Films", "Campaigns", "Operations"],
     summary:
       "Independent Artist — community building, multi-platform marketing, ticketed live show.",
@@ -639,10 +652,11 @@ export const projects: Project[] = [
     title: "Built a Timeless Campaign",
     client: "BeatO — a top 100 health-tech startup in chronic healthcare",
     role: "Content Strategist and Copywriter",
+    year: "2020 – 2021",
     categories: ["Branding", "Campaigns"],
     summary:
       "Content Strategist and Copywriter — strategy, storytelling, team.",
-    result: "5 years · Still building community",
+    result: "5 years and the campaign is still building community",
     coverImage: "/assets/beato/cover.jpg",
     visible: true,
     content: {
@@ -682,6 +696,7 @@ export const projects: Project[] = [
     title: "Business Reboot",
     client: "Nexttt One Talent Academy & Agency",
     role: "Business Consultant",
+    year: "2026",
     categories: ["Campaigns", "Films", "Operations"],
     summary:
       "Business Consultant — revenue, operations, digital marketing, 13-member team.",

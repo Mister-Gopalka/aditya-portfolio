@@ -99,7 +99,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             <Reveal className={`order-first ${flip ? "md:order-first" : "md:order-last"}`}>
               <div className={frameClass}>
                 {media.youtubeId ? (
-                  <LiteYouTube videoId={media.youtubeId} title={project.title} />
+                  <LiteYouTube videoId={media.youtubeId} title={project.title} revealOnScroll={index === 0} />
                 ) : media.mp4 ? (
                   <video
                     controls

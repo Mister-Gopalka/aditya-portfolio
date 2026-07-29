@@ -77,15 +77,15 @@ h1, h2, h3, h4, h5, h6 {
      photo also risk exhausting the mobile compositor outright. Opacity is
      nearly free; blur is the expensive part. So mobile pays with opacity.
 
-     Dial the alpha to taste — higher = photo recedes, copy gets more focus. */
-  --v2-card-tint: rgba(18, 6, 0, 0.92);
+     Dial the alpha to taste — higher = photo recedes, copy gets more focus.
+     Fully opaque (alpha 1) on both breakpoints — cards read as solid panels,
+     not glass over the photo. */
+  --v2-card-tint: rgba(18, 6, 0, 1);
 }
 
 @media (min-width: 768px) {
   :root {
-    /* Desktop keeps the smoked-glass read: blur does the work, so the tint
-       can stay lighter and let the photo through. */
-    --v2-card-tint: rgba(18, 6, 0, 0.8);
+    --v2-card-tint: rgba(18, 6, 0, 1);
   }
 }
 .v2-root {

@@ -650,7 +650,7 @@ export const projects: Project[] = [
   {
     slug: "beato",
     title: "Built a Timeless Campaign",
-    client: "BeatO — a top 100 health-tech startup in chronic healthcare",
+    client: "BeatO — a top 100 health-tech startup",
     role: "Content Strategist and Copywriter",
     year: "2020 – 2021",
     categories: ["Branding", "Campaigns"],

@@ -90,4 +90,4 @@ has several load-bearing rules that are easy to break by accident. Then
 **`AGENTS.md`**.
 
 Project conventions, design decisions, and the site's purpose live in
-`../CLAUDE.md`.
+`CLAUDE.md`.

@@ -6,7 +6,7 @@ made, what is fragile, and what has been agreed but not built.
 **What it deliberately does not contain:** current state or history. `git log
 --oneline` and `git status` cover those perfectly and are never stale. Stack,
 commands and deploy live in `README.md`; purpose, rules and design decisions
-live in `../CLAUDE.md`.
+live in `CLAUDE.md`.
 
 ---
 
@@ -126,5 +126,5 @@ anything a future session could break without knowing why it was done that way.
 Leave the rest alone.
 
 Do not add status or history here — git already has both. If a fact is about
-purpose, rules or design, it belongs in `../CLAUDE.md`; if it is about stack,
+purpose, rules or design, it belongs in `CLAUDE.md`; if it is about stack,
 commands or deploy, it belongs in `README.md`. Nothing should appear twice.

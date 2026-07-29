@@ -61,15 +61,44 @@ export default function ContactScene() {
     setSubmitted(true);
   }
 
+  // Alphas raised for the fixed photo behind. At /30 and /20 the placeholders
+  // measured 2.34:1 and the underlines 1.79:1 over the bright wall — the form
+  // was the least legible thing on the page and the most important.
+  //
+  // Deliberately overshooting: how bright the photo is here depends on viewport
+  // height, since the scrim is a gradient anchored to the viewport. The same
+  // form measured 4.78:1 at 768px tall and 4.03:1 at 800px. /70 and /55 clear
+  // the bar (4.84:1 and 3.65:1) across that spread instead of straddling it.
+  // These placeholders are the only labels the fields have, so they have to read.
   const inputClass =
-    "bg-transparent border-b border-[#FFF8F3]/20 px-1 py-3 text-sm text-[#FFF8F3] placeholder:text-[#FFF8F3]/30 focus:outline-none focus:border-[#C9956A] transition-colors";
+    "bg-transparent border-b border-[#FFF8F3]/55 px-1 py-3 text-sm text-[#FFF8F3] placeholder:text-[#FFF8F3]/70 focus:outline-none focus:border-[#C9956A] transition-colors";
 
   return (
     <section className="relative min-h-[90svh] flex items-center border-t border-[#FFF8F3]/5">
       <div className="w-full max-w-5xl mx-auto px-6 md:px-12 py-24">
+        {/* Highlighted, not just recoloured. This line lands over the bright
+            wall of the fixed photo, where gold measures 2.17:1 and brown only
+            3.51:1 — both under the bar. The highlight carries its own
+            background, so contrast stops depending on what the photo is doing
+            at that scroll position. Same recipe as the hero kicker, which also
+            makes the page open and close on a marked line. */}
         <Reveal>
-          <p className="text-[#C9956A] uppercase tracking-[0.3em] text-xs mb-6">
-            The end — or the beginning
+          <p className="mb-6">
+            <span
+              className="inline uppercase tracking-[0.3em] text-xs font-medium text-[#120600]"
+              style={{
+                background: "rgba(201, 149, 106, 0.48)",
+                borderRadius: "2px 11px 4px 13px / 9px 3px 11px 4px",
+                padding: "4px 11px 4px 7px",
+                transform: "rotate(-0.7deg)",
+                boxShadow:
+                  "2px 1.5px 0 -0.5px rgba(201, 149, 106, 0.3), 0 0 0 0.5px rgba(201, 149, 106, 0.2)",
+                WebkitBoxDecorationBreak: "clone",
+                boxDecorationBreak: "clone",
+              }}
+            >
+              The end — or the beginning
+            </span>
           </p>
         </Reveal>
         <Reveal delay={100}>

@@ -55,8 +55,9 @@ app/
   admin/                visibility toggles
   globals.css           design tokens, scroll-reveal, marquee
 components/
-  v2/                   Reveal, SideNav, SwipeCard, ContactScene, LiteYouTube
-  DeckCarousel, VideoEmbed, AdminPanel
+  v2/                   Reveal, SideNav, SwipeCard, ContactScene, LiteYouTube,
+                        ScrollProgress
+  SmartImage, DeckCarousel, VideoEmbed, AdminPanel, Header
 lib/projects.ts         all project content
 public/assets/<slug>/   per-project images and media
 ```
@@ -75,6 +76,11 @@ git revert -m 1 <merge-sha> && git push origin main
 Merges use `--no-ff` so a whole feature reverses as a single commit.
 
 The admin password is set in the Vercel dashboard and is never committed.
+
+> **Asset paths are case-sensitive in production and not on your Mac.** macOS
+> ignores case, Vercel's Linux build does not — so an asset referenced as
+> `oyo-ad1.png` when the file is `OYO Ad1.png` works locally and 404s only once
+> deployed. Match the filename exactly, including capitals and spaces.
 
 ## Before changing anything
 

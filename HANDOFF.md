@@ -23,8 +23,9 @@ A bespoke Next.js portfolio site for **Aditya Gopalka** (Creative Director / Cop
 ## 3. Run & verify
 
 - Dev server: preview config name **`portfolio`** in `.claude/launch.json`, port **3000** (`npm run dev`). Use the browser preview tools, not Bash, to run it.
-- Production check: `npm run build` (currently passes, 22 static pages). `npx tsc --noEmit` for types.
+- Production check: `npm run build` (currently passes, 21 static pages). `npx tsc --noEmit` for types.
 - **Verify via DOM, not screenshots.** The browser screenshot tool frequently returns blank/partial captures in this project (see memory). Use `javascript_tool` (`getBoundingClientRect`, `textContent`, computed styles) or `get_page_text` to confirm changes reliably.
+- **Testing on a real phone.** Same Wi-Fi, open the machine's LAN IP (`ipconfig getifaddr en0`). If the page renders but everything is invisible — cards look like empty panels, hero text missing — that is **not** a CSS bug: Next blocks cross-origin requests to dev-only assets, React never hydrates, and every `.v2-reveal` stays at `opacity: 0`. `allowedDevOrigins` in `next.config.ts` allows it (update the IP when DHCP changes it). For an accurate read on performance use a production server instead: `npm run build && PORT=4321 npm run start`. Dev mode is not a fair test of blur/compositing cost.
 
 ## 4. Content model (the important part)
 
@@ -79,12 +80,45 @@ All 10 project pages + cards are written, styled, and building. In current card 
 
 *(Removed 2026-07-25: **Black Water Bottle** — brand being reworked, may return later; its assets are in the `_deleted-assets-backup-2026-07-25/` folder.)*
 
-## 7. Remaining tasks (before deploy)
+## 6b. Homepage — the "fixed stage" (shipped 2026-07-29)
+
+The hero photo no longer scrolls away. It and its gradient sit in a
+`position: fixed` layer behind the **whole** page; hero text, cards and contact
+all travel over them. The photo and scrim themselves were not redesigned — same
+framing, same gradient — so the top of the page looks as it always did.
+
+Constraints that are load-bearing, do not break them:
+
+- The stage is a **top-level child of `<main>`**. Any ancestor with `transform`,
+  `filter`, `backdrop-filter` or `perspective` becomes the containing block for
+  a fixed descendant and breaks the pinning. The kicker's `rotate()` and the
+  cards' blur both sit *below* it in the tree deliberately.
+- Height is **`100lvh`**, not `svh`/`dvh`, so the layer does not resize when iOS
+  Safari's address bar collapses. `svh` makes the photo jump mid-scroll.
+- The ticker is **`fixed`, not `sticky`** — sticky repositions on the main thread
+  and visibly lags during iOS momentum scroll. An in-flow placeholder `<div>`
+  directly after it mirrors its box to reserve the height it no longer occupies.
+  Delete that placeholder and the whole page rides up ~45px and the hero kicker
+  collides with the wordmark.
+- Cards are dark glass over the photo, tint in `--v2-card-tint`. **Mobile gets a
+  near-solid tint and no `backdrop-filter`** (`md:backdrop-blur-lg`): opacity is
+  nearly free, blur is the expensive part, and ~10 blurred layers over a fixed
+  photo is the main perf risk on this page.
+- Contact-section alphas were raised for legibility over the bright wall. Anything
+  landing in the **top third of the viewport** sits over the brightest part of the
+  photo, because the scrim gradient is anchored to the viewport, not the document.
+
+Project pages (`/projects/[slug]`) were deliberately left alone — they keep their
+own per-project hero images.
+
+## 7. Remaining tasks
 
 1. **Troost card — reframe copy toward ownership.** It's #7 (an "ownership/direction" slot) but the card sells speed/volume ("7 Scripts Into 7 Reels" / "14 reel ads"). Aditya was the **creative director — built the team, directed the shoot**. Rewrite summary/result to foreground the role. *(Discussed, approved in principle, not yet done.)* Worth a quick role-forward gut-check across all cards while at it.
-2. **Delete dead code:** the old flat `content.nexttt` renderer in `app/projects/[slug]/page.tsx` (~300 lines, labelled "legacy, unused") + its `nexttt?` type in `lib/projects.ts`. No project uses it.
-3. **Image / performance pass:** heaviest assets are content `<img>`s (portfolio-deck JPGs ~0.5–0.8MB × 8, brochures, covers). Compress/resize; consider moving content `<img>` → `next/image`; run Lighthouse.
-4. **Deploy to Vercel** (admin password stays in Vercel env).
+2. **`README.md` is still create-next-app boilerplate** — it references Geist, which this project does not use. Replace or leave, but do not trust it.
+
+*(Done: dead `content.nexttt` renderer deleted; image/perf pass done 2026-07-25;
+deployed to Vercel — `git push origin main` **is** the deploy, no staging step.
+Rollback is `git revert -m 1 <merge-sha> && git push origin main`.)*
 
 ## 8. Working style Aditya prefers
 

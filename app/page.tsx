@@ -88,11 +88,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         {/* Dark glass, not white glass. The card now travels over the photo,
             whose wall is bright, so a 5% white tint would lose the copy. The
             tint lives in --v2-card-tint (app/globals.css) — one line to dial.
-
-            The blur is md: only, deliberately. On iOS Safari a backdrop-filter
-            whose backdrop is position:fixed drops the element's children and
-            the card renders blank; mobile uses a near-solid tint instead. */}
-        <article className="group relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-[#FFF8F3]/12 bg-[var(--v2-card-tint)] md:backdrop-blur-lg shadow-[0_32px_70px_-18px_rgba(0,0,0,0.85)]">
+            Tint is fully opaque, so no backdrop-filter is needed — it would
+            have nothing to blur and would only cost GPU. */}
+        <article className="group relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-[#FFF8F3]/12 bg-[var(--v2-card-tint)] shadow-[0_32px_70px_-18px_rgba(0,0,0,0.85)]">
           {/* Glossy top sheen — laminated paper, not wet glass */}
           <span className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/8 to-transparent" />
 
@@ -126,8 +124,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               </div>
             </Reveal>
 
-            {/* Text */}
-            <Link href={`/projects/${project.slug}`} className={`block ${flip ? "md:text-right" : ""}`}>
+            {/* Text — not a link. Only "View the full story" below navigates,
+                so a swipe-scroll on mobile can't accidentally tap through. */}
+            <div className={`block ${flip ? "md:text-right" : ""}`}>
               <Reveal>
                 <p className="font-[family-name:var(--font-fraunces)] font-light text-[clamp(2.5rem,5vw,4rem)] leading-none text-[#C9956A]/50 mb-1">
                   {String(index + 1).padStart(2, "0")}
@@ -139,12 +138,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 </p>
               </Reveal>
               <Reveal delay={160}>
-                <h2
-                  style={{ fontFamily: "var(--font-fraunces)" }}
-                  className="font-semibold text-[clamp(1.7rem,3.4vw,2.9rem)] leading-[1.05] tracking-tight text-[#FFF8F3] mb-4 group-hover:text-[#C9956A] transition-colors duration-300"
-                >
-                  {project.title}
-                </h2>
+                <Link href={`/projects/${project.slug}`} className="block">
+                  <h2
+                    style={{ fontFamily: "var(--font-fraunces)" }}
+                    className="font-semibold text-[clamp(1.7rem,3.4vw,2.9rem)] leading-[1.05] tracking-tight text-[#FFF8F3] mb-4 hover:text-[#C9956A] transition-colors duration-300"
+                  >
+                    {project.title}
+                  </h2>
+                </Link>
               </Reveal>
               <Reveal delay={240}>
                 <p className="text-sm text-[#FFF8F3]/60 mb-5">{project.client}</p>
@@ -160,11 +161,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 </Reveal>
               )}
               <Reveal delay={480}>
-                <span className="inline-block text-sm text-[#FFF8F3]/70 border-b border-[#FFF8F3]/25 pb-1 group-hover:text-[#FFF8F3] group-hover:border-[#C9956A] transition-colors duration-300">
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="inline-block text-sm text-[#FFF8F3]/70 border-b border-[#FFF8F3]/25 pb-1 hover:text-[#FFF8F3] hover:border-[#C9956A] transition-colors duration-300"
+                >
                   View the full story →
-                </span>
+                </Link>
               </Reveal>
-            </Link>
+            </div>
           </div>
         </article>
       </SwipeCard>

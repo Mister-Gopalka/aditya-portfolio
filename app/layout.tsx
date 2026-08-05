@@ -64,12 +64,12 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.adityagopalka.com"),
-  title: "Aditya Gopalka — Creative Director & Copywriter in Delhi | Ad Films, Brand Campaigns",
+  title: "Aditya Gopalka — Creative Director & Marketing Consultant (B2B & D2C) in Delhi | Ad Films, Brand Campaigns",
   description:
-    "Aditya Gopalka is a Creative Director, Copywriter, and Brand Manager based in Delhi. 10 years of brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, Wunderman Thompson, L&K Saatchi & Saatchi, and more.",
+    "Aditya Gopalka is a Creative Director, Marketing Consultant (B2B & D2C), and Brand Manager based in Delhi. 10 years of brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, Wunderman Thompson, L&K Saatchi & Saatchi, and more.",
   keywords: [
     "Creative Director Delhi",
-    "Copywriter Delhi",
+    "Marketing Consultant Delhi",
     "Brand Manager Delhi",
     "Ad Film Director Delhi",
     "Brand Campaign Delhi",
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Aditya Gopalka — Creative Director & Copywriter in Delhi",
+    title: "Aditya Gopalka — Creative Director & Marketing Consultant (B2B & D2C) in Delhi",
     description:
       "Brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, and more. Based in Delhi.",
     type: "website",
@@ -106,13 +106,13 @@ export const metadata: Metadata = {
         url: "/assets/aditya-photo.jpg",
         width: 1200,
         height: 630,
-        alt: "Aditya Gopalka — Creative Director & Copywriter, Delhi",
+        alt: "Aditya Gopalka — Creative Director & Marketing Consultant (B2B & D2C), Delhi",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aditya Gopalka — Creative Director & Copywriter in Delhi",
+    title: "Aditya Gopalka — Creative Director & Marketing Consultant (B2B & D2C) in Delhi",
     description:
       "Brand campaigns, ad films, and creative direction — for OYO, HomeLane, Vinod Chopra Films, and more.",
     images: ["/assets/aditya-photo.jpg"],

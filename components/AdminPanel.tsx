@@ -36,9 +36,11 @@ function formatDay(date: string) {
   });
 }
 
+// Slugs are shown as-is. Title-casing them read as "Oyo" and "Linkedin.Com" —
+// a display transform is not worth mangling a brand name over.
 function prettyPath(path: string) {
   if (path === "/") return "Home";
-  return path.replace(/^\/projects\//, "").replace(/-/g, " ");
+  return path.replace(/^\/projects\//, "");
 }
 
 const card = "rounded-2xl border border-[#1C0A00]/10 bg-[#FFF8F3] shadow-md";
@@ -269,7 +271,7 @@ function Breakdown({
         <div className="flex flex-col gap-2.5">
           {rows.slice(0, 8).map((r) => (
             <div key={r.label} className="flex items-center gap-3">
-              <span className="text-sm text-[#1C0A00]/75 w-40 shrink-0 truncate capitalize">
+              <span className="text-sm text-[#1C0A00]/75 w-40 shrink-0 truncate">
                 {r.label}
               </span>
               <div className="flex-1 h-2 bg-[#1C0A00]/8 rounded-full overflow-hidden">

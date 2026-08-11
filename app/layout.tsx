@@ -1,58 +1,16 @@
 import type { Metadata } from "next";
-import {
-  Playfair_Display,
-  DM_Sans,
-  Fraunces,
-  Inter,
-  Plus_Jakarta_Sans,
-  Lato,
-  Caveat,
-  Space_Grotesk,
-} from "next/font/google";
+import { Fraunces, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { getFontPairing } from "@/lib/supabase";
+import Tracker from "@/components/Tracker";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["700"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
+// Fraunces + Space Grotesk are the settled pairing. The admin panel used to be
+// able to swap between three pairings, which meant every visitor downloaded
+// six typefaces to render two. The switcher is gone; so are the other four.
 const fraunces = Fraunces({
   subsets: ["latin"],
   weight: ["300", "600", "900"],
   style: ["normal", "italic"],
   variable: "--font-fraunces",
-  display: "swap",
-});
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-inter",
-  display: "swap",
-});
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-plus-jakarta",
-  display: "swap",
-});
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-lato",
-  display: "swap",
-});
-const caveat = Caveat({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-caveat",
   display: "swap",
 });
 const spaceGrotesk = Space_Grotesk({
@@ -124,29 +82,20 @@ export const metadata: Metadata = {
 
 };
 
-export default async function RootLayout({
+// No longer async: the layout used to hit Supabase for the font pairing on
+// every single render of every page.
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pairing = await getFontPairing();
-  const pairingClass = `font-pairing-${pairing.toLowerCase()}`;
-
-  const fontVars = [
-    playfair.variable,
-    dmSans.variable,
-    fraunces.variable,
-    inter.variable,
-    plusJakarta.variable,
-    lato.variable,
-    caveat.variable,
-    spaceGrotesk.variable,
-  ].join(" ");
+  const fontVars = [fraunces.variable, spaceGrotesk.variable].join(" ");
 
   return (
     <html lang="en" className={`${fontVars} h-full`}>
-      <body className={`${pairingClass} min-h-full flex flex-col`}>
+      <body className="min-h-full flex flex-col">
         {children}
+        <Tracker />
       </body>
     </html>
   );

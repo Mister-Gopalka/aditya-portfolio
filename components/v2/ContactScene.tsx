@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Reveal from "./Reveal";
-import { supabase } from "@/lib/supabase";
 
 const WHATSAPP = "919560501904";
 
@@ -45,20 +44,31 @@ function WhatsAppIcon({ size = 22 }: { size?: number }) {
 
 export default function ContactScene() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", requirement: "" });
 
+  // Posts to /api/contact, which saves the message and emails it on. The old
+  // version inserted straight from the browser and always claimed success,
+  // so a failed write looked identical to a delivered one.
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (supabase) {
-      try {
-        await supabase.from("contact_submissions").insert({
-          name: form.name,
-          phone: form.phone,
-          requirement: form.requirement,
-        });
-      } catch {}
+    setSending(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error();
+      setSubmitted(true);
+    } catch {
+      setError("That did not send. WhatsApp me instead — the button above.");
+    } finally {
+      setSending(false);
     }
-    setSubmitted(true);
   }
 
   // Alphas raised for the fixed photo behind. At /30 and /20 the placeholders
@@ -146,10 +156,12 @@ export default function ContactScene() {
                 />
                 <button
                   type="submit"
-                  className="self-start mt-4 text-sm font-medium text-[#FFF8F3] border border-[#FFF8F3]/25 rounded-full px-8 py-3 hover:bg-[#A0281A] hover:border-[#A0281A] transition-colors"
+                  disabled={sending}
+                  className="self-start mt-4 text-sm font-medium text-[#FFF8F3] border border-[#FFF8F3]/25 rounded-full px-8 py-3 hover:bg-[#A0281A] hover:border-[#A0281A] transition-colors disabled:opacity-50"
                 >
-                  Send →
+                  {sending ? "Sending…" : "Send →"}
                 </button>
+                {error && <p className="text-sm text-[#E85D45]">{error}</p>}
               </form>
             )}
           </div>

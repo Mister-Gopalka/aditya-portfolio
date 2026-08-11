@@ -9,22 +9,13 @@
   --color-brown: #1C0A00;
 }
 
-/* Font Pairing A — Editorial (default) */
-.font-pairing-a {
-  --font-heading: "Playfair Display", serif;
-  --font-body: "DM Sans", sans-serif;
-}
-
-/* Font Pairing B — Modern Warm */
-.font-pairing-b {
-  --font-heading: "Fraunces", serif;
-  --font-body: "Inter", sans-serif;
-}
-
-/* Font Pairing C — Bold Sans */
-.font-pairing-c {
-  --font-heading: "Plus Jakarta Sans", sans-serif;
-  --font-body: "Lato", sans-serif;
+/* The settled pairing, applied globally. These used to be set by one of three
+   .font-pairing-* classes that the admin panel switched between; the switcher
+   is gone and the four unused typefaces are no longer downloaded. Used by the
+   chrome outside .v2-root — Header, /admin, 404. */
+:root {
+  --font-heading: var(--font-fraunces), serif;
+  --font-body: var(--font-space-grotesk), sans-serif;
 }
 
 * {
@@ -34,12 +25,12 @@
 body {
   background-color: var(--color-offwhite);
   color: var(--color-brown);
-  font-family: var(--font-body, "DM Sans", sans-serif);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading, "Playfair Display", serif);
+  font-family: var(--font-heading);
 }
 
 /* Flip card 3D */
@@ -89,7 +80,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 .v2-root {
-  font-family: var(--font-space-grotesk), "DM Sans", sans-serif;
+  font-family: var(--font-space-grotesk), sans-serif;
   background-color: var(--v2-ground);
 }
 .v2-root h1,

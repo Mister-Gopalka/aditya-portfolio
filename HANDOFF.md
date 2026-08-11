@@ -99,6 +99,35 @@ gradient as before the change.
 
 Project pages keep their own per-project hero images and were left alone.
 
+## 2b. Admin panel and data — load-bearing rules
+
+The panel holds real enquiries from real people. These are not style choices.
+
+- **`SUPABASE_SERVICE_ROLE_KEY` is server-only and must never gain a
+  `NEXT_PUBLIC_` prefix.** It bypasses row-level security completely. The
+  prefix is the only thing standing between it and the published bundle.
+- **RLS is the real access control, not the API routes.** The anon key is
+  public by design, so anything the anon role may do, the internet may do.
+  `site_settings` is public-read and server-write; `contact_submissions` is
+  insert-only; `pageviews` has no public policy at all. Adding a convenience
+  policy to any of them reopens what `fbbbfa5` closed — before that commit a
+  `Public write` policy on `site_settings` let anyone hide every project.
+- **`proxy.ts` is the gate for `/api/admin/*`.** Next 16 renamed the
+  `middleware` convention to `proxy`. A new admin route is protected the
+  moment it lives under that path and unprotected the moment it does not.
+  `/admin` itself is guarded separately, in the page's own server component,
+  so nothing is fetched before the session is verified.
+- **The contact form must fail loudly.** It previously inserted from the
+  browser and always showed the success state, so a rejected write looked
+  exactly like a delivered message. Two submissions sat unread for weeks.
+- **Visitor logging stores a daily-salted hash of the IP, never the IP.** The
+  salt rotates daily on purpose: enough to count distinct people per day, not
+  enough to follow anyone between days. Nothing is written to the visitor's
+  browser, which is why the site needs no consent banner. Keep it that way.
+- **`/admin` is excluded from tracking** in `components/Tracker.tsx`, and
+  deduped at module scope rather than in a ref — a ref is recreated by React's
+  double mount, which recorded two rows per view.
+
 ## 3. Open work
 
 1. **Troost card — reframe toward ownership.** It sits in an
@@ -107,6 +136,15 @@ Project pages keep their own per-project hero images and were left alone.
    the team and directed the shoot. Rewrite `summary` and `result` to lead with
    the role. Worth a role-forward gut-check across all ten cards at the same
    time. *(Agreed in principle, not done.)*
+
+2. **Homepage card reordering from `/admin`.** Card order is hardcoded in
+   `lib/projects.ts`. Being able to reorder without a deploy would let the
+   most relevant work lead when applying for a specific role. Discussed and
+   deliberately deferred, not rejected. *(Not started.)*
+
+3. **Rate limiting on `/api/contact`.** Length caps and required fields are
+   enforced; nothing throttles repeat posts. Fine at current volume, and the
+   first thing to add if the inbox ever gets spammed.
 
 ## 4. Removed, on purpose
 

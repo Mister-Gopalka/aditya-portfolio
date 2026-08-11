@@ -11,9 +11,28 @@ Live: **https://www.adityagopalka.com**
 - **Next.js 16.2.9** (App Router) + **React 19.2.4**
 - **Tailwind CSS v4** (CSS-variable syntax)
 - **TypeScript**
-- **Supabase** (`lib/supabase.ts`) — backs `/admin`, which only toggles
-  per-project visibility
+- **Supabase** (`lib/supabase.ts`) — backs `/admin`: the contact inbox, visitor
+  stats, and per-project visibility
 - Hosted on **Vercel**
+
+### Environment variables
+
+Set in `.env.local` locally and in the Vercel dashboard for production. None
+are committed.
+
+| Variable | Required | What it does |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes | Public key. Ships in the browser bundle — RLS is what limits it |
+| `SUPABASE_SERVICE_ROLE_KEY` | yes | **Server-only.** Reads the inbox and visitor stats, writes site settings. Without it the contact form returns 500 |
+| `ADMIN_PASSWORD` | yes | Sign-in for `/admin`. Also the default key that signs session cookies, so changing it signs you out |
+| `RESEND_API_KEY` | no | Emails each new enquiry. Without it messages still save, they just do not alert |
+| `CONTACT_TO_EMAIL` | no | Defaults to `mistergopalka@gmail.com` |
+| `CONTACT_FROM_EMAIL` | no | Defaults to Resend's shared sender, which only delivers to the Resend account owner. Set once a domain is verified |
+| `ADMIN_SESSION_SECRET` | no | Signs session cookies independently of the password |
+
+**`SUPABASE_SERVICE_ROLE_KEY` must never carry a `NEXT_PUBLIC_` prefix.** It
+bypasses row-level security entirely; prefixing it would publish it.
 
 ## Running it
 
@@ -52,13 +71,20 @@ npm run build && PORT=4321 npm run start
 app/
   page.tsx              homepage — fixed photo stage, ticker, project cards
   projects/[slug]/      one shared template renders every case study
-  admin/                visibility toggles
+  admin/                inbox, visitor stats, visibility toggles
+  api/admin/            auth, inbox actions, visibility — all behind proxy.ts
+  api/contact/          saves a form submission and emails it on
+  api/track/            records one pageview
   globals.css           design tokens, scroll-reveal, marquee
+proxy.ts                session gate for /api/admin/* (Next 16's middleware)
 components/
   v2/                   Reveal, SideNav, SwipeCard, ContactScene, LiteYouTube,
                         ScrollProgress
-  SmartImage, DeckCarousel, VideoEmbed, AdminPanel, Header
+  SmartImage, DeckCarousel, VideoEmbed, AdminPanel, AdminLogin, Tracker, Header
 lib/projects.ts         all project content
+lib/admin-auth.ts       signs and verifies the session cookie
+lib/inbox.ts            contact submissions
+lib/analytics.ts        pageview recording and aggregation
 public/assets/<slug>/   per-project images and media
 ```
 
@@ -75,7 +101,9 @@ git revert -m 1 <merge-sha> && git push origin main
 
 Merges use `--no-ff` so a whole feature reverses as a single commit.
 
-The admin password is set in the Vercel dashboard and is never committed.
+The admin password is set in the Vercel dashboard and is never committed. Any
+new environment variable has to be added there before the deploy that needs it,
+or the deploy ships broken — see the table above.
 
 > **Asset paths are case-sensitive in production and not on your Mac.** macOS
 > ignores case, Vercel's Linux build does not — so an asset referenced as

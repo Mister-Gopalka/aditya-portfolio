@@ -71,8 +71,8 @@ npm run build && PORT=4321 npm run start
 app/
   page.tsx              homepage — fixed photo stage, ticker, project cards
   projects/[slug]/      one shared template renders every case study
-  admin/                inbox, visitor stats, visibility toggles
-  api/admin/            auth, inbox actions, visibility — all behind proxy.ts
+  admin/                inbox, archive, visitor stats, visibility toggles
+  api/admin/            auth, inbox actions, stats, visibility — behind proxy.ts
   api/contact/          saves a form submission and emails it on
   api/track/            records one pageview
   globals.css           design tokens, scroll-reveal, marquee

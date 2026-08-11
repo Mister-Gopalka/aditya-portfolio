@@ -1,17 +1,21 @@
+import { cookies } from "next/headers";
 import AdminPanel from "@/components/AdminPanel";
-import { getFontPairing, getProjectVisibility, getHeroPhotoSettings } from "@/lib/supabase";
+import AdminLogin from "@/components/AdminLogin";
+import { getProjectVisibility } from "@/lib/supabase";
+import { listSubmissions } from "@/lib/inbox";
+import { getVisitorStats } from "@/lib/analytics";
+import { ADMIN_COOKIE, verifySessionToken } from "@/lib/admin-auth";
 import { projects } from "@/lib/projects";
 
-export default async function AdminPage() {
-  const currentPairing = await getFontPairing();
-  const visibilityMap = await getProjectVisibility();
-  const heroPhoto = await getHeroPhotoSettings();
+// Always render fresh: an inbox that serves a cached copy would hide new
+// messages, which is the exact failure this panel exists to fix.
+export const dynamic = "force-dynamic";
 
-  const projectList = projects.map((p) => ({
-    slug: p.slug,
-    title: p.title,
-    visible: visibilityMap[p.slug] !== undefined ? visibilityMap[p.slug] : p.visible,
-  }));
+export const metadata = { robots: { index: false, follow: false } };
+
+export default async function AdminPage() {
+  const cookieStore = await cookies();
+  const authed = await verifySessionToken(cookieStore.get(ADMIN_COOKIE)?.value);
 
   return (
     <div className="min-h-screen bg-[#FFF8F3]">
@@ -20,9 +24,30 @@ export default async function AdminPage() {
           ← Back to site
         </a>
         <h1 className="font-heading text-3xl font-bold text-[#1C0A00] mt-4 mb-2">Admin Panel</h1>
-        <p className="text-[#1C0A00]/50 text-sm mb-10">Manage font pairings and project visibility.</p>
-        <AdminPanel currentPairing={currentPairing} projects={projectList} heroPhoto={heroPhoto} />
+        <p className="text-[#1C0A00]/50 text-sm mb-10">
+          Messages from the site, who has been visiting, and what the homepage shows.
+        </p>
+
+        {/* Nothing below is fetched, let alone rendered, without a valid
+            session. The password check happens before any query runs. */}
+        {authed ? <AuthedPanel /> : <AdminLogin />}
       </div>
     </div>
   );
+}
+
+async function AuthedPanel() {
+  const [visibilityMap, submissions, stats] = await Promise.all([
+    getProjectVisibility(),
+    listSubmissions(),
+    getVisitorStats(),
+  ]);
+
+  const projectList = projects.map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    visible: visibilityMap[p.slug] !== undefined ? visibilityMap[p.slug] : p.visible,
+  }));
+
+  return <AdminPanel submissions={submissions} stats={stats} projects={projectList} />;
 }

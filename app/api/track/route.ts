@@ -20,7 +20,10 @@ export async function POST(req: Request) {
   try {
     await recordPageview({
       path,
-      referrer: referrerHost(typeof body.referrer === "string" ? body.referrer : null),
+      referrer: referrerHost(
+        typeof body.referrer === "string" ? body.referrer : null,
+        req.headers.get("host")
+      ),
       device: deviceFrom(userAgent),
       visitor_hash: await visitorHash(ip, userAgent),
     });

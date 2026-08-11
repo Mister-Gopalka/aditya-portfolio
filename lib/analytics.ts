@@ -31,12 +31,24 @@ export function deviceFrom(userAgent: string): string {
   return "Desktop";
 }
 
-/** Hostname only. Full referrer URLs carry query strings we have no use for. */
-export function referrerHost(referrer: string | null | undefined): string | null {
+/**
+ * Hostname only. Full referrer URLs carry query strings we have no use for.
+ *
+ * A visitor moving between pages on the site sends the site itself as the
+ * referrer. Counting that would put adityagopalka.com at the top of "where
+ * they came from", which is the one place that answer is useless. Self
+ * referrals are recorded as direct, same as a typed URL.
+ */
+export function referrerHost(
+  referrer: string | null | undefined,
+  selfHost?: string | null
+): string | null {
   if (!referrer) return null;
   try {
     const host = new URL(referrer).hostname.replace(/^www\./, "");
-    return host || null;
+    if (!host) return null;
+    if (selfHost && host === selfHost.replace(/^www\./, "").split(":")[0]) return null;
+    return host;
   } catch {
     return null;
   }

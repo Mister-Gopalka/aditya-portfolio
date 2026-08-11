@@ -124,6 +124,20 @@ The panel holds real enquiries from real people. These are not style choices.
   salt rotates daily on purpose: enough to count distinct people per day, not
   enough to follow anyone between days. Nothing is written to the visitor's
   browser, which is why the site needs no consent banner. Keep it that way.
+  Country and city come from Vercel's edge headers, which are derived from the
+  IP before it reaches us — the IP itself is still never stored.
+- **A "visitor" is one `visitor_hash`, which already scopes to one day.**
+  Sessions therefore do not span midnight, and someone returning tomorrow is a
+  new row. That is the privacy tradeoff working as intended, not a bug to fix.
+- **Traffic sources are attributed to a visitor's *entry* referrer**, in
+  `visitor_stats`. Counting referrers per pageview double-counted people:
+  arriving from LinkedIn and clicking a second page sends no referrer on that
+  hit, so one person landed under both "linkedin.com" and "Direct". With five
+  visitors the panel read four as Direct. Per-visitor counts across sources
+  must always sum to the headline visitor count — that is the check.
+- **The stats functions are deliberately not `security definer`**, so the
+  caller's RLS still applies and `execute` is revoked from `anon`. Adding
+  `security definer` would expose visitor data to the public key.
 - **`/admin` is excluded from tracking** in `components/Tracker.tsx`, and
   deduped at module scope rather than in a ref — a ref is recreated by React's
   double mount, which recorded two rows per view.
@@ -145,6 +159,21 @@ The panel holds real enquiries from real people. These are not style choices.
 3. **Rate limiting on `/api/contact`.** Length caps and required fields are
    enforced; nothing throttles repeat posts. Fine at current volume, and the
    first thing to add if the inbox ever gets spammed.
+
+4. **Resend domain verification — considered and deliberately skipped**
+   (2026-08-11). Alerts send from `onboarding@resend.dev`, a shared sender.
+   The first formatted enquiry went to Gmail's spam folder: the body claims
+   "New message from adityagopalka.com" while the envelope is resend.dev, and
+   that mismatch plus embedded links reads as phishing. Aditya marked it not
+   spam and later alerts reached Primary, so this was closed as good enough.
+   **If alerts start getting filtered again, this is the fix** — verify a
+   sending domain in Resend, add the DNS records at GoDaddy, then set
+   `CONTACT_FROM_EMAIL`. Do not re-diagnose it from scratch.
+
+5. **The visitor poll's `visibilityState` guard is unverifiable locally.** The
+   automation browser always reports the tab as hidden, so the 15-second poll
+   never fires under test. The polling path itself was verified by temporarily
+   removing the guard. If you touch that effect, expect the same.
 
 ## 4. Removed, on purpose
 

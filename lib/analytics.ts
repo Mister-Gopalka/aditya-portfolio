@@ -1,28 +1,76 @@
 import { supabaseAdmin } from "./supabase";
 
-// How far back the admin panel looks. Portfolio traffic is small enough that
-// aggregating the raw rows in JS is cheaper than maintaining a rollup table.
-const WINDOW_DAYS = 30;
-const MAX_ROWS = 20000;
+// Aditya reads these in IST, and the SQL buckets days in Asia/Kolkata, so the
+// "today" boundary has to agree with it. IST has no DST, hence the flat offset.
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
-export type Pageview = {
-  created_at: string;
-  path: string;
-  referrer: string | null;
-  device: string | null;
-  visitor_hash: string | null;
+export type Period = "today" | "7d" | "30d" | "all";
+
+export const PERIODS: { id: Period; label: string }[] = [
+  { id: "today", label: "Today" },
+  { id: "7d", label: "7 days" },
+  { id: "30d", label: "30 days" },
+  { id: "all", label: "All time" },
+];
+
+export const DEFAULT_PERIOD: Period = "7d";
+
+export type StatRow = { label: string; views: number; visitors: number };
+export type PlaceRow = {
+  country: string;
+  city: string | null;
+  views: number;
+  visitors: number;
 };
 
 export type VisitorStats = {
   totalViews: number;
   uniqueVisitors: number;
-  viewsToday: number;
-  visitorsToday: number;
   daily: { date: string; views: number; visitors: number }[];
-  topPaths: { path: string; views: number }[];
-  topReferrers: { referrer: string; views: number }[];
-  devices: { device: string; views: number }[];
+  sources: StatRow[];
+  pages: StatRow[];
+  places: PlaceRow[];
+  devices: StatRow[];
 };
+
+export type RecentVisitor = {
+  visitor_hash: string;
+  first_seen: string;
+  last_seen: string;
+  views: number;
+  source: string | null;
+  device: string | null;
+  country: string | null;
+  city: string | null;
+  paths: string[];
+};
+
+export function isPeriod(value: unknown): value is Period {
+  return typeof value === "string" && PERIODS.some((p) => p.id === value);
+}
+
+/** The UTC instant a period starts. `all` has no lower bound. */
+export function periodStart(period: Period): string | null {
+  const now = Date.now();
+  switch (period) {
+    case "today": {
+      // Midnight in IST, expressed as UTC.
+      const ist = new Date(now + IST_OFFSET_MS);
+      const midnightIst = Date.UTC(
+        ist.getUTCFullYear(),
+        ist.getUTCMonth(),
+        ist.getUTCDate()
+      );
+      return new Date(midnightIst - IST_OFFSET_MS).toISOString();
+    }
+    case "7d":
+      return new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
+    case "30d":
+      return new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+    case "all":
+      return null;
+  }
+}
 
 export function deviceFrom(userAgent: string): string {
   const ua = userAgent.toLowerCase();
@@ -78,63 +126,25 @@ export async function recordPageview(view: {
   referrer: string | null;
   device: string;
   visitor_hash: string;
+  country: string | null;
+  city: string | null;
 }) {
   if (!supabaseAdmin) return;
   await supabaseAdmin.from("pageviews").insert(view);
 }
 
-function countBy<T extends string>(rows: { key: T }[]): { key: T; views: number }[] {
-  const counts = new Map<T, number>();
-  for (const row of rows) counts.set(row.key, (counts.get(row.key) ?? 0) + 1);
-  return [...counts.entries()]
-    .map(([key, views]) => ({ key, views }))
-    .sort((a, b) => b.views - a.views);
+export async function getVisitorStats(period: Period): Promise<VisitorStats | null> {
+  if (!supabaseAdmin) return null;
+  const { data, error } = await supabaseAdmin.rpc("visitor_stats", {
+    since: periodStart(period),
+  });
+  if (error || !data) return null;
+  return data as VisitorStats;
 }
 
-export async function getVisitorStats(): Promise<VisitorStats | null> {
-  if (!supabaseAdmin) return null;
-
-  const since = new Date(Date.now() - WINDOW_DAYS * 24 * 60 * 60 * 1000).toISOString();
-  const { data, error } = await supabaseAdmin
-    .from("pageviews")
-    .select("created_at, path, referrer, device, visitor_hash")
-    .gte("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(MAX_ROWS);
-
-  if (error) return null;
-  const rows = (data ?? []) as Pageview[];
-
-  const today = new Date().toISOString().slice(0, 10);
-  const byDay = new Map<string, { views: number; visitors: Set<string> }>();
-
-  for (const row of rows) {
-    const day = row.created_at.slice(0, 10);
-    if (!byDay.has(day)) byDay.set(day, { views: 0, visitors: new Set() });
-    const bucket = byDay.get(day)!;
-    bucket.views += 1;
-    if (row.visitor_hash) bucket.visitors.add(row.visitor_hash);
-  }
-
-  const daily = [...byDay.entries()]
-    .map(([date, b]) => ({ date, views: b.views, visitors: b.visitors.size }))
-    .sort((a, b) => a.date.localeCompare(b.date));
-
-  return {
-    totalViews: rows.length,
-    uniqueVisitors: new Set(rows.map((r) => r.visitor_hash).filter(Boolean)).size,
-    viewsToday: byDay.get(today)?.views ?? 0,
-    visitorsToday: byDay.get(today)?.visitors.size ?? 0,
-    daily,
-    topPaths: countBy(rows.map((r) => ({ key: r.path }))).map(({ key, views }) => ({
-      path: key,
-      views,
-    })),
-    topReferrers: countBy(
-      rows.filter((r) => r.referrer).map((r) => ({ key: r.referrer as string }))
-    ).map(({ key, views }) => ({ referrer: key, views })),
-    devices: countBy(rows.map((r) => ({ key: r.device ?? "Unknown" }))).map(
-      ({ key, views }) => ({ device: key, views })
-    ),
-  };
+export async function getRecentVisitors(limit = 10): Promise<RecentVisitor[]> {
+  if (!supabaseAdmin) return [];
+  const { data, error } = await supabaseAdmin.rpc("recent_visitors", { limit_n: limit });
+  if (error || !data) return [];
+  return data as RecentVisitor[];
 }

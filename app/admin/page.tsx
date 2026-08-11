@@ -3,7 +3,7 @@ import AdminPanel from "@/components/AdminPanel";
 import AdminLogin from "@/components/AdminLogin";
 import { getProjectVisibility } from "@/lib/supabase";
 import { listSubmissions } from "@/lib/inbox";
-import { getVisitorStats } from "@/lib/analytics";
+import { DEFAULT_PERIOD, getRecentVisitors, getVisitorStats } from "@/lib/analytics";
 import { ADMIN_COOKIE, verifySessionToken } from "@/lib/admin-auth";
 import { projects } from "@/lib/projects";
 
@@ -37,10 +37,13 @@ export default async function AdminPage() {
 }
 
 async function AuthedPanel() {
-  const [visibilityMap, submissions, stats] = await Promise.all([
+  // Archived messages are fetched too — the Archive tab renders from the same
+  // list, so archiving does not need a second round trip.
+  const [visibilityMap, submissions, stats, recent] = await Promise.all([
     getProjectVisibility(),
-    listSubmissions(),
-    getVisitorStats(),
+    listSubmissions(true),
+    getVisitorStats(DEFAULT_PERIOD),
+    getRecentVisitors(10),
   ]);
 
   const projectList = projects.map((p) => ({
@@ -49,5 +52,12 @@ async function AuthedPanel() {
     visible: visibilityMap[p.slug] !== undefined ? visibilityMap[p.slug] : p.visible,
   }));
 
-  return <AdminPanel submissions={submissions} stats={stats} projects={projectList} />;
+  return (
+    <AdminPanel
+      submissions={submissions}
+      stats={stats}
+      recent={recent}
+      projects={projectList}
+    />
+  );
 }

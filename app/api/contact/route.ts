@@ -25,15 +25,25 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/**
+ * Sends the alert. Never throws: the submission is already saved, and a
+ * failed email must not fail the request.
+ *
+ * It does, however, log loudly. The first version swallowed every error, so a
+ * deployment missing RESEND_API_KEY looked exactly like a working one — the
+ * message saved, the form said thanks, and no alert was ever sent. These lines
+ * are what make that visible in the Vercel logs.
+ */
 async function sendEmail(sub: { name: string; phone: string; requirement: string }) {
   const key = process.env.RESEND_API_KEY;
-  // No key yet means no alert. The submission is already saved either way —
-  // a missing key must never cost you the message.
-  if (!key) return;
+  if (!key) {
+    console.error("[contact] RESEND_API_KEY is not set — message saved, no alert sent");
+    return;
+  }
 
   const whatsapp = `https://wa.me/${sub.phone.replace(/\D/g, "")}`;
 
-  await fetch("https://api.resend.com/emails", {
+  const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${key}`,
@@ -43,6 +53,20 @@ async function sendEmail(sub: { name: string; phone: string; requirement: string
       from: FROM,
       to: [TO],
       subject: `New enquiry from ${sub.name}`,
+      // HTML-only mail scores badly with spam filters. A plain-text
+      // alternative is the cheapest deliverability win available; the real
+      // one is verifying a domain so this stops sending as resend.dev.
+      text: [
+        `New message from adityagopalka.com`,
+        ``,
+        `Name:  ${sub.name}`,
+        `Phone: ${sub.phone}`,
+        `WhatsApp: ${whatsapp}`,
+        ``,
+        sub.requirement,
+        ``,
+        `Open the inbox: https://www.adityagopalka.com/admin`,
+      ].join("\n"),
       html: `
         <div style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.6;color:#1C0A00">
           <p style="margin:0 0 18px;font-size:13px;color:#8a7f78">New message from adityagopalka.com</p>
@@ -53,7 +77,16 @@ async function sendEmail(sub: { name: string; phone: string; requirement: string
         </div>
       `,
     }),
-  }).catch(() => {});
+  }).catch((e) => {
+    console.error("[contact] Resend request failed:", e?.message ?? e);
+    return null;
+  });
+
+  if (res && !res.ok) {
+    console.error(
+      `[contact] Resend rejected the email: HTTP ${res.status} ${await res.text()}`
+    );
+  }
 }
 
 export async function POST(req: Request) {

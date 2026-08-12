@@ -141,6 +141,15 @@ The panel holds real enquiries from real people. These are not style choices.
 - **`/admin` is excluded from tracking** in `components/Tracker.tsx`, and
   deduped at module scope rather than in a ref — a ref is recreated by React's
   double mount, which recorded two rows per view.
+- **Delete is permanent — no soft-delete, no trash.** `deleteSubmission` in
+  `lib/inbox.ts` issues a real `DELETE`. Archive is the reversible action;
+  delete is not, on purpose, so it needs a second click ("Confirm delete") in
+  `AdminPanel.tsx` before it fires. Do not add a way to recover a deleted row.
+- **Dev points at the same Supabase project as production.** There is no
+  separate dev database. Verifying anything by hand against this project's
+  tables can touch real visitor data or real messages — filter to synthetic
+  records (a distinctive name prefix works) and confirm before deleting
+  anything that isn't one you just inserted yourself.
 
 ## 3. Open work
 

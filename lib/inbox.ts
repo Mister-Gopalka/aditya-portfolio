@@ -43,6 +43,13 @@ export async function setArchived(id: string, archived: boolean) {
   if (error) throw new Error(error.message);
 }
 
+/** Permanent. Unlike archive, there is no row left to restore afterward. */
+export async function deleteSubmission(id: string) {
+  if (!supabaseAdmin) throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
+  const { error } = await supabaseAdmin.from("contact_submissions").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 export async function createSubmission(input: {
   name: string;
   phone: string;

@@ -141,6 +141,33 @@ The panel holds real enquiries from real people. These are not style choices.
 - **`/admin` is excluded from tracking** in `components/Tracker.tsx`, and
   deduped at module scope rather than in a ref — a ref is recreated by React's
   double mount, which recorded two rows per view.
+- **Aditya's own visits are excluded by the trusted-device cookie**, checked
+  server-side in `/api/track`. Not by IP: mobile networks and home broadband
+  both reassign, so an IP rule works today and fails silently next week. A
+  visitor with no device cookie costs no extra database call, so this is free
+  for everyone who is not him.
+- **A sign-in from an unrecognised device needs a code emailed to Aditya, and
+  that same email is the intrusion alert.** One message serves both, so there
+  is nothing to configure twice and no second channel that can fail unnoticed.
+  The code is only ever sent after the password is correct, so a wrong guess
+  cannot make this site send mail.
+- **Device tokens are signed, and the signature is load-bearing.** A cookie of
+  `<uuid>.<hmac>` where the uuid is a real trusted device but the signature is
+  wrong grants nothing — not admin access, not tracking exclusion. Verified
+  against forged cookies in four shapes. Never trust a device id that has not
+  been through `verifyDeviceToken`.
+- **Revoking a device is deliberately impossible from the admin panel.** It
+  lives in `scripts/devices.mjs` (`npm run devices revoke <id>`), which needs
+  the service-role key from `.env.local`. If someone ever does get into the
+  panel, they must not be able to un-trust Aditya's laptop and phone and lock
+  him out. Do not add a revoke button, however convenient it looks.
+- **Changing `ADMIN_PASSWORD` un-trusts every device**, because device tokens
+  are signed with the same secret. That is the intended response to a
+  suspected compromise, and it is why there is no "sign out everywhere".
+- **`npm run devices code` is the way back in if email breaks.** Without it, a
+  missing `RESEND_API_KEY` would be a full lockout rather than an
+  inconvenience. It is not a backdoor: it already requires the service-role
+  key, which is total database access anyway.
 - **Delete is permanent — no soft-delete, no trash.** `deleteSubmission` in
   `lib/inbox.ts` issues a real `DELETE`. Archive is the reversible action;
   delete is not, on purpose, so it needs a second click ("Confirm delete") in

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { markRead, setArchived } from "@/lib/inbox";
+import { deleteSubmission, markRead, setArchived } from "@/lib/inbox";
 import { revalidatePath } from "next/cache";
 
 // Guarded by proxy.ts — an unauthenticated request never reaches this file.
@@ -23,6 +23,9 @@ export async function POST(req: Request) {
         break;
       case "unarchive":
         await setArchived(id, false);
+        break;
+      case "delete":
+        await deleteSubmission(id);
         break;
       default:
         return NextResponse.json({ error: "Unknown action" }, { status: 400 });

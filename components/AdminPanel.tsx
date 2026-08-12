@@ -82,7 +82,10 @@ function placeLabel(country: string | null, city: string | null) {
 
 export default function AdminPanel({ submissions, stats, recent, projects }: Props) {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("inbox");
+  // Visitors first: it changes every time someone visits, which is more
+  // often than the inbox changes. Archive and Projects change rarest, so
+  // they sit last.
+  const [tab, setTab] = useState<Tab>("visitors");
   const [visibility, setVisibility] = useState<Record<string, boolean>>(
     Object.fromEntries(projects.map((p) => [p.slug, p.visible]))
   );
@@ -128,9 +131,9 @@ export default function AdminPanel({ submissions, stats, recent, projects }: Pro
   }
 
   const tabs: { id: Tab; label: string; badge?: number }[] = [
+    { id: "visitors", label: "Visitors" },
     { id: "inbox", label: "Inbox", badge: unread },
     { id: "archive", label: "Archive", badge: archived.length },
-    { id: "visitors", label: "Visitors" },
     { id: "projects", label: "Projects" },
   ];
 
@@ -233,6 +236,11 @@ function Inbox({
   onAction: (id: string, action: string) => void;
   empty: string;
 }) {
+  // Which row is mid-confirm. Deleting is permanent — no undo, unlike
+  // archive — so it takes a second click on "Confirm delete" rather than
+  // firing on the first tap.
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+
   if (submissions.length === 0) {
     return (
       <div className={`${card} p-8`}>
@@ -246,6 +254,7 @@ function Inbox({
       {submissions.map((s) => {
         const unread = !s.read_at;
         const isArchived = !!s.archived_at;
+        const confirming = confirmingId === s.id;
         return (
           <article
             key={s.id}
@@ -279,7 +288,7 @@ function Inbox({
               </p>
             )}
 
-            <div className="flex gap-4 mt-5 text-sm">
+            <div className="flex items-center gap-4 mt-5 text-sm">
               <button
                 disabled={busy}
                 onClick={() => onAction(s.id, unread ? "read" : "unread")}
@@ -294,6 +303,36 @@ function Inbox({
               >
                 {isArchived ? "Move back to inbox" : "Archive"}
               </button>
+
+              {confirming ? (
+                <span className="flex items-center gap-3">
+                  <button
+                    disabled={busy}
+                    onClick={() => {
+                      setConfirmingId(null);
+                      onAction(s.id, "delete");
+                    }}
+                    className="font-medium text-[#A0281A] hover:text-[#8B1F13] transition-colors disabled:opacity-40"
+                  >
+                    Confirm delete
+                  </button>
+                  <button
+                    disabled={busy}
+                    onClick={() => setConfirmingId(null)}
+                    className="text-[#1C0A00]/40 hover:text-[#1C0A00]/70 transition-colors disabled:opacity-40"
+                  >
+                    Cancel
+                  </button>
+                </span>
+              ) : (
+                <button
+                  disabled={busy}
+                  onClick={() => setConfirmingId(s.id)}
+                  className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </article>
         );

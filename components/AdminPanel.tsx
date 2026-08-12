@@ -289,49 +289,63 @@ function Inbox({
             )}
 
             <div className="flex items-center gap-4 mt-5 text-sm">
-              <button
-                disabled={busy}
-                onClick={() => onAction(s.id, unread ? "read" : "unread")}
-                className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
-              >
-                {unread ? "Mark read" : "Mark unread"}
-              </button>
-              <button
-                disabled={busy}
-                onClick={() => onAction(s.id, isArchived ? "unarchive" : "archive")}
-                className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
-              >
-                {isArchived ? "Move back to inbox" : "Archive"}
-              </button>
+              {isArchived ? (
+                <>
+                  <button
+                    disabled={busy}
+                    onClick={() => onAction(s.id, "unarchive")}
+                    className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
+                  >
+                    Move back to inbox
+                  </button>
 
-              {confirming ? (
-                <span className="flex items-center gap-3">
-                  <button
-                    disabled={busy}
-                    onClick={() => {
-                      setConfirmingId(null);
-                      onAction(s.id, "delete");
-                    }}
-                    className="font-medium text-[#A0281A] hover:text-[#8B1F13] transition-colors disabled:opacity-40"
-                  >
-                    Confirm delete
-                  </button>
-                  <button
-                    disabled={busy}
-                    onClick={() => setConfirmingId(null)}
-                    className="text-[#1C0A00]/40 hover:text-[#1C0A00]/70 transition-colors disabled:opacity-40"
-                  >
-                    Cancel
-                  </button>
-                </span>
+                  {confirming ? (
+                    <span className="flex items-center gap-3">
+                      <button
+                        disabled={busy}
+                        onClick={() => {
+                          setConfirmingId(null);
+                          onAction(s.id, "delete");
+                        }}
+                        className="font-medium text-[#A0281A] hover:text-[#8B1F13] transition-colors disabled:opacity-40"
+                      >
+                        Confirm delete
+                      </button>
+                      <button
+                        disabled={busy}
+                        onClick={() => setConfirmingId(null)}
+                        className="text-[#1C0A00]/40 hover:text-[#1C0A00]/70 transition-colors disabled:opacity-40"
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      disabled={busy}
+                      onClick={() => setConfirmingId(s.id)}
+                      className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </>
               ) : (
-                <button
-                  disabled={busy}
-                  onClick={() => setConfirmingId(s.id)}
-                  className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
-                >
-                  Delete
-                </button>
+                <>
+                  <button
+                    disabled={busy}
+                    onClick={() => onAction(s.id, unread ? "read" : "unread")}
+                    className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
+                  >
+                    {unread ? "Mark read" : "Mark unread"}
+                  </button>
+                  <button
+                    disabled={busy}
+                    onClick={() => onAction(s.id, "archive")}
+                    className="text-[#1C0A00]/50 hover:text-[#A0281A] transition-colors disabled:opacity-40"
+                  >
+                    Archive
+                  </button>
+                </>
               )}
             </div>
           </article>

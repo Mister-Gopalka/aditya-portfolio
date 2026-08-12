@@ -72,6 +72,28 @@ export function periodStart(period: Period): string | null {
   }
 }
 
+/**
+ * Country and city as Vercel's edge saw them. Absent when running locally.
+ *
+ * Vercel percent-encodes these, hence the decode. Derived from the IP before
+ * the request reaches us; the IP itself is never stored.
+ */
+export function geoFromRequest(req: Request): { country: string | null; city: string | null } {
+  const read = (name: string): string | null => {
+    const raw = req.headers.get(name);
+    if (!raw) return null;
+    try {
+      return decodeURIComponent(raw).trim() || null;
+    } catch {
+      return raw.trim() || null;
+    }
+  };
+  return {
+    country: read("x-vercel-ip-country"),
+    city: read("x-vercel-ip-city"),
+  };
+}
+
 export function deviceFrom(userAgent: string): string {
   const ua = userAgent.toLowerCase();
   if (/ipad|tablet|playbook|silk/.test(ua)) return "Tablet";

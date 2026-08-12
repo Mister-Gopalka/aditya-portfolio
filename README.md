@@ -48,6 +48,28 @@ npx tsc --noEmit     # type check
 npm run lint
 ```
 
+### Trusted devices
+
+Signing in to `/admin` from a device the site has not seen before needs a
+six-digit code, emailed to `CONTACT_TO_EMAIL`. That same email is the alert
+that someone has the password, so there is only one thing to read. Verify once
+per device and it stops asking. Visits from a trusted device are never counted
+in Visitors.
+
+```bash
+npm run devices list            # what is trusted right now
+npm run devices revoke <id>     # stop trusting one
+npm run devices code            # mint a code when email is not working
+```
+
+**Revoking is only possible here, never from the admin panel.** If someone got
+into the panel they must not be able to un-trust the real devices and lock
+Aditya out. `npm run devices code` is the way back in if Resend fails — without
+it, a missing `RESEND_API_KEY` would be a lockout rather than a nuisance.
+
+Changing `ADMIN_PASSWORD` un-trusts every device, because device cookies are
+signed with the same secret. That is the right move if you suspect a leak.
+
 ### Testing on a real device
 
 Open the machine's LAN address on the same Wi-Fi — `ipconfig getifaddr en0`.
@@ -71,8 +93,8 @@ npm run build && PORT=4321 npm run start
 app/
   page.tsx              homepage — fixed photo stage, ticker, project cards
   projects/[slug]/      one shared template renders every case study
-  admin/                inbox, archive, visitor stats, visibility toggles
-  api/admin/            auth, inbox actions, stats, visibility — behind proxy.ts
+  admin/                inbox, archive, visitor stats, trusted devices, visibility
+  api/admin/            auth (+ auth/verify), inbox, stats, visibility — behind proxy.ts
   api/contact/          saves a form submission and emails it on
   api/track/            records one pageview
   globals.css           design tokens, scroll-reveal, marquee
@@ -83,8 +105,11 @@ components/
   SmartImage, DeckCarousel, VideoEmbed, AdminPanel, AdminLogin, Tracker, Header
 lib/projects.ts         all project content
 lib/admin-auth.ts       signs and verifies the session cookie
+lib/admin-devices.ts    trusted devices and the emailed sign-in code
+lib/email.ts            the one place that talks to Resend
 lib/inbox.ts            contact submissions
 lib/analytics.ts        pageview recording and aggregation
+scripts/devices.mjs     list / revoke devices, mint a code — see below
 public/assets/<slug>/   per-project images and media
 ```
 

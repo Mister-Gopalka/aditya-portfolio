@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Submission } from "@/lib/inbox";
+import type { AdminDevice } from "@/lib/admin-devices";
 import {
   DEFAULT_PERIOD,
   PERIODS,
@@ -18,9 +19,10 @@ interface Props {
   stats: VisitorStats | null;
   recent: RecentVisitor[];
   projects: { slug: string; title: string; visible: boolean }[];
+  devices: AdminDevice[];
 }
 
-type Tab = "inbox" | "archive" | "visitors" | "projects";
+type Tab = "inbox" | "archive" | "visitors" | "projects" | "devices";
 
 // Explicit timeZone so the server and the browser format identically and
 // hydration does not mismatch. Aditya reads these in IST.
@@ -80,7 +82,13 @@ function placeLabel(country: string | null, city: string | null) {
   return city ? `${city}, ${name}` : name;
 }
 
-export default function AdminPanel({ submissions, stats, recent, projects }: Props) {
+export default function AdminPanel({
+  submissions,
+  stats,
+  recent,
+  projects,
+  devices,
+}: Props) {
   const router = useRouter();
   // Visitors first: it changes every time someone visits, which is more
   // often than the inbox changes. Archive and Projects change rarest, so
@@ -135,6 +143,7 @@ export default function AdminPanel({ submissions, stats, recent, projects }: Pro
     { id: "inbox", label: "Inbox", badge: unread },
     { id: "archive", label: "Archive", badge: archived.length },
     { id: "projects", label: "Projects" },
+    { id: "devices", label: "Devices" },
   ];
 
   return (
@@ -197,6 +206,8 @@ export default function AdminPanel({ submissions, stats, recent, projects }: Pro
       )}
 
       {tab === "visitors" && <Visitors initialStats={stats} initialRecent={recent} />}
+
+      {tab === "devices" && <Devices devices={devices} />}
 
       {tab === "projects" && (
         <section className={`${card} overflow-hidden`}>
@@ -351,6 +362,71 @@ function Inbox({
           </article>
         );
       })}
+    </div>
+  );
+}
+
+/**
+ * Read-only, on purpose. There is no revoke button and there must not be one.
+ *
+ * If someone ever does get into this panel, they must not be able to un-trust
+ * Aditya's laptop and phone and lock him out of his own site. Revoking happens
+ * from a terminal instead: `npm run devices revoke <id>`.
+ */
+function Devices({ devices }: { devices: AdminDevice[] }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <section className={`${card} p-6`}>
+        <h3 className="font-heading text-base font-bold text-[#1C0A00] mb-1">
+          Trusted devices
+        </h3>
+        <p className="text-xs text-[#1C0A00]/50 leading-relaxed">
+          Signing in from anywhere else needs a code emailed to you, and sends that
+          same email as an alert. Visits from these devices are never counted in
+          Visitors.
+        </p>
+      </section>
+
+      {devices.length === 0 ? (
+        <div className={`${card} p-8`}>
+          <p className="text-sm text-[#1C0A00]/50">
+            No devices yet. The one you are reading this on will appear here after
+            you verify it.
+          </p>
+        </div>
+      ) : (
+        devices.map((d) => (
+          <section key={d.id} className={`${card} p-6`}>
+            <h4 className="font-heading text-lg font-bold text-[#1C0A00]">{d.name}</h4>
+            <dl className="mt-3 text-sm grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5">
+              <dt className="text-[#1C0A00]/45">Added</dt>
+              <dd className="text-[#1C0A00]/75">{formatDate(d.created_at)}</dd>
+
+              <dt className="text-[#1C0A00]/45">Last used</dt>
+              <dd className="text-[#1C0A00]/75">
+                {d.last_seen_at ? formatDate(d.last_seen_at) : "Not since it was added"}
+              </dd>
+
+              <dt className="text-[#1C0A00]/45">Where</dt>
+              <dd className="text-[#1C0A00]/75">{placeLabel(d.country, d.city)}</dd>
+
+              <dt className="text-[#1C0A00]/45">Reference</dt>
+              <dd className="text-[#1C0A00]/45 font-mono text-xs break-all">{d.id}</dd>
+            </dl>
+          </section>
+        ))
+      )}
+
+      <section className={`${card} p-6`}>
+        <p className="text-xs text-[#1C0A00]/50 leading-relaxed">
+          To remove a device, run{" "}
+          <code className="bg-[#1C0A00]/8 rounded px-1.5 py-0.5">
+            npm run devices revoke &lt;reference&gt;
+          </code>{" "}
+          on your laptop. Deliberately not possible from this page, so that nobody
+          who gets in here can lock you out of your own devices.
+        </p>
+      </section>
     </div>
   );
 }

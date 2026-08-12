@@ -5,6 +5,7 @@ import { getProjectVisibility } from "@/lib/supabase";
 import { listSubmissions } from "@/lib/inbox";
 import { DEFAULT_PERIOD, getRecentVisitors, getVisitorStats } from "@/lib/analytics";
 import { ADMIN_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { listDevices } from "@/lib/admin-devices";
 import { projects } from "@/lib/projects";
 
 // Always render fresh: an inbox that serves a cached copy would hide new
@@ -39,11 +40,12 @@ export default async function AdminPage() {
 async function AuthedPanel() {
   // Archived messages are fetched too — the Archive tab renders from the same
   // list, so archiving does not need a second round trip.
-  const [visibilityMap, submissions, stats, recent] = await Promise.all([
+  const [visibilityMap, submissions, stats, recent, devices] = await Promise.all([
     getProjectVisibility(),
     listSubmissions(true),
     getVisitorStats(DEFAULT_PERIOD),
     getRecentVisitors(10),
+    listDevices(),
   ]);
 
   const projectList = projects.map((p) => ({
@@ -58,6 +60,7 @@ async function AuthedPanel() {
       stats={stats}
       recent={recent}
       projects={projectList}
+      devices={devices}
     />
   );
 }

@@ -14,10 +14,15 @@ export const ADMIN_COOKIE = "admin_session";
 // enough that a forgotten open tab on someone else's machine expires.
 export const SESSION_MAX_AGE = 60 * 60 * 12; // 12 hours
 
-function secret(): string | null {
+export function secret(): string | null {
   // ADMIN_SESSION_SECRET is optional. Falling back to ADMIN_PASSWORD means
   // there is no second env var to set up, and changing the password
   // invalidates every existing session, which is the behaviour you want.
+  //
+  // Device tokens are signed with this too, so changing the password also
+  // un-trusts every registered device and forces a fresh emailed code on each
+  // one. That is the correct response to a suspected compromise, and it is
+  // the reason there is no separate "sign out everywhere" button.
   return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || null;
 }
 
@@ -25,6 +30,13 @@ function base64url(bytes: Uint8Array): string {
   let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+/** HMAC with the admin secret. Null when no secret is configured at all. */
+export async function signPayload(payload: string): Promise<string | null> {
+  const key = secret();
+  if (!key) return null;
+  return sign(payload, key);
 }
 
 async function sign(payload: string, key: string): Promise<string> {
@@ -41,7 +53,7 @@ async function sign(payload: string, key: string): Promise<string> {
 }
 
 // Comparison that does not leak how much of the value matched via timing.
-function safeEqual(a: string, b: string): boolean {
+export function safeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);

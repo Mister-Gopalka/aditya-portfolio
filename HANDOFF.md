@@ -146,6 +146,26 @@ The panel holds real enquiries from real people. These are not style choices.
   both reassign, so an IP rule works today and fails silently next week. A
   visitor with no device cookie costs no extra database call, so this is free
   for everyone who is not him.
+- **A view is only reported after someone behaves like a person**: three
+  seconds on the page plus one real input (scroll, pointer, touch, key,
+  click), in `components/Tracker.tsx`. Reporting on load counted machines. In
+  the week to 2026-08-17, 90 of 108 "visitors" came from Des Moines, Boydton
+  and Washington — Google Cloud, Azure and AWS datacenter cities — opened the
+  homepage, **never once opened a project page, and never carried a
+  referrer**. Those are link scanners and preview fetchers firing every time
+  the portfolio is shared by email or chat, each from a fresh IP, so each was
+  counted as a new unique visitor. **Do not move this back to firing on
+  load**, and do not try to fix it with a user-agent list alone: those
+  scanners send a real Chrome user agent. Not scrolling is what gives them
+  away.
+- **The gate deliberately does not check `visibilityState`.** Interaction
+  already proves presence, so the extra condition only adds a way to lose a
+  real visitor silently if a browser reports visibility wrongly — which the
+  automation browser does, always reporting `hidden`.
+- **Bots are flagged, not dropped.** `is_bot` and `user_agent` are stored, and
+  every panel figure filters on `is_bot = false`. The user agent was missing
+  originally, which is why a week of traffic could only be diagnosed by
+  geography rather than named outright. Keep storing it.
 - **A sign-in from an unrecognised device needs a code emailed to Aditya, and
   that same email is the intrusion alert.** One message serves both, so there
   is nothing to configure twice and no second channel that can fail unnoticed.

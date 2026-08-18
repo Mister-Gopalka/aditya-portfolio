@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   deviceFrom,
   geoFromRequest,
+  isBot,
   recordPageview,
   referrerHost,
   visitorHash,
@@ -37,6 +38,12 @@ export async function POST(req: Request) {
   const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
   const { country, city } = geoFromRequest(req);
 
+  // Flagged rather than dropped. A week of traffic could only be diagnosed by
+  // geography because the user agent was never kept, and the answer to "who
+  // keeps fetching my link" was a guess. These rows never reach a headline
+  // number, but they stay answerable.
+  const bot = isBot(userAgent);
+
   try {
     await recordPageview({
       path,
@@ -48,10 +55,12 @@ export async function POST(req: Request) {
       visitor_hash: await visitorHash(ip, userAgent),
       country,
       city,
+      user_agent: userAgent.slice(0, 500),
+      is_bot: bot,
     });
   } catch {
     // Analytics must never break a page load.
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, counted: !bot });
 }

@@ -588,6 +588,16 @@ function Visitors({
             {(stats?.totalViews ?? 0) === 1 ? "page view" : "page views"}
           </p>
         </div>
+
+        {/* Proof the filter is doing something, rather than a silent deletion. */}
+        {(stats?.filteredViews ?? 0) > 0 && (
+          <div className="ml-auto text-right">
+            <p className="text-sm font-medium text-[#1C0A00]/35 tabular-nums leading-none">
+              {stats!.filteredViews}
+            </p>
+            <p className="text-xs text-[#1C0A00]/35 mt-2">automated, not counted</p>
+          </div>
+        )}
       </section>
 
       {showChart && (

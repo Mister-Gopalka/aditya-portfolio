@@ -26,6 +26,8 @@ export type PlaceRow = {
 export type VisitorStats = {
   totalViews: number;
   uniqueVisitors: number;
+  /** Automated hits that reached the endpoint and were kept out of the counts. */
+  filteredViews: number;
   daily: { date: string; views: number; visitors: number }[];
   sources: StatRow[];
   pages: StatRow[];
@@ -94,6 +96,49 @@ export function geoFromRequest(req: Request): { country: string | null; city: st
   };
 }
 
+/**
+ * Anything that says it is not a person.
+ *
+ * This is the second line of defence, not the first — components/Tracker.tsx
+ * only reports a view after a real interaction, and most automated fetchers
+ * never get that far. What this catches is the ones that do render and
+ * interact, plus it labels rather than silently drops, so "who keeps fetching
+ * my link" stays answerable.
+ *
+ * It will not catch a scanner that copies a real Chrome user agent, which the
+ * email link-scanners do. The interaction gate is what stops those.
+ */
+const BOT_PATTERN = new RegExp(
+  [
+    // Self-identifying crawlers and indexers
+    "bot\\b", "\\bbots\\b", "crawler", "crawling", "spider", "slurp", "scraper",
+    // Search and SEO
+    "googlebot", "google-extended", "bingbot", "bingpreview", "yandex", "baiduspider",
+    "duckduckbot", "applebot", "ahrefs", "semrush", "mj12", "dotbot", "petalbot", "dataforseo",
+    // LLM fetchers — the ones Aditya suspected
+    "gptbot", "chatgpt", "oai-searchbot", "openai", "perplexity", "claudebot",
+    "anthropic", "ccbot", "bytespider", "amazonbot", "meta-externalagent",
+    // Link preview and unfurl, which is what a shared link triggers
+    "facebookexternalhit", "whatsapp", "telegram", "slack", "discord", "linkedin",
+    "twitterbot", "embedly", "quora link preview", "pinterest", "redditbot", "skypeuripreview",
+    // Monitoring and security scanners
+    "uptimerobot", "pingdom", "statuscake", "site24x7", "monitor", "lighthouse",
+    "pagespeed", "gtmetrix", "netcraft", "censys", "expanse", "zgrab", "masscan", "nuclei",
+    // Headless and scripted clients
+    "headlesschrome", "phantomjs", "puppeteer", "playwright", "selenium",
+    "python-requests", "python-urllib", "aiohttp", "httpx", "scrapy",
+    "curl/", "wget", "libwww", "axios", "node-fetch", "go-http-client",
+    "java/", "okhttp", "apache-httpclient", "postman", "insomnia",
+  ].join("|"),
+  "i"
+);
+
+export function isBot(userAgent: string): boolean {
+  // No user agent at all is not a browser.
+  if (!userAgent.trim()) return true;
+  return BOT_PATTERN.test(userAgent);
+}
+
 export function deviceFrom(userAgent: string): string {
   const ua = userAgent.toLowerCase();
   if (/ipad|tablet|playbook|silk/.test(ua)) return "Tablet";
@@ -150,6 +195,8 @@ export async function recordPageview(view: {
   visitor_hash: string;
   country: string | null;
   city: string | null;
+  user_agent: string;
+  is_bot: boolean;
 }) {
   if (!supabaseAdmin) return;
   await supabaseAdmin.from("pageviews").insert(view);

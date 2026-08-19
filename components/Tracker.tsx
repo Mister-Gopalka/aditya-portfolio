@@ -10,24 +10,63 @@ import { usePathname } from "next/navigation";
 const recentlySent = new Map<string, number>();
 const DEDUPE_MS = 2000;
 
-// A view is only reported once someone has behaved like a person: the page
-// visible, a few seconds passed, and one real input.
+// A view is only reported once the session shows depth: a second page opened,
+// or a real distance scrolled into one.
 //
-// Reporting on load counted machines. Over one week, 90 of 108 "visitors"
-// came from Google, Azure and AWS datacenter cities, opened the homepage,
-// never opened a project page, and never carried a referrer — link scanners
-// and previewers firing every time the portfolio was shared by email or chat.
-// Blocking them by user agent alone does not work, because those scanners
-// send a real Chrome user agent. What they do not do is scroll.
-const DWELL_MS = 3000;
-const HUMAN_EVENTS = ["scroll", "pointermove", "touchstart", "keydown", "click"] as const;
+// An earlier version gated on dwell plus one interaction event. It failed.
+// Over the 24 hours after it shipped, 23 of 24 recorded views still came from
+// AWS us-east-1 and Google us-central1, seven of them in duplicate pairs
+// microseconds apart. Those scanners run headless Chrome: they wait out a
+// timer and they emit scroll and pointer events, so anything built on "did
+// something happen" is spoofable and was.
+//
+// What none of them has ever done, across every row inspected, is open a
+// second page. They fetch "/" and leave. Depth is the signal that survives,
+// because it costs a scanner real work to fake and costs a reader nothing.
+const SCROLL_FRACTION = 0.25;
+
+// Deliberately not sessionStorage. Nothing may be written to a visitor's
+// browser — that property is why the site needs no consent banner (HANDOFF
+// §2b). Module scope carries qualification across client-side navigation,
+// which is the case that matters, and resets on a full reload.
+let qualified = false;
+const seenPaths = new Set<string>();
+const pending = new Set<string>();
+
+function send(path: string) {
+  const now = Date.now();
+  const last = recentlySent.get(path);
+  if (last && now - last < DEDUPE_MS) return;
+  recentlySent.set(path, now);
+
+  // keepalive so the request survives the visitor navigating away.
+  fetch("/api/track", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ path, referrer: document.referrer || null }),
+    keepalive: true,
+  }).catch(() => {});
+}
 
 /**
- * Fires at most one /api/track call per page view.
+ * Flushes everything held back, then reports directly from here on.
+ *
+ * The homepage view of someone who goes on to read a project is a real view
+ * and is not thrown away — it is held until they prove themselves and sent
+ * afterwards, so the first page of a genuine visit still counts.
+ */
+function qualify() {
+  if (qualified) return;
+  qualified = true;
+  for (const path of pending) send(path);
+  pending.clear();
+}
+
+/**
+ * Fires at most one /api/track call per page view, once the session qualifies.
  *
  * Deliberately tiny and dependency-free: no third-party script, no cookie, no
- * localStorage, nothing that blocks or delays render. The gate below only
- * delays a background beacon, so it costs a visitor nothing.
+ * storage of any kind, nothing that blocks or delays render.
  */
 export default function Tracker() {
   const pathname = usePathname();
@@ -38,56 +77,31 @@ export default function Tracker() {
     // a device you have signed in from are dropped server-side.
     if (pathname.startsWith("/admin")) return;
 
-    let dwelled = false;
-    let interacted = false;
-    let done = false;
+    seenPaths.add(pathname);
 
-    const send = () => {
-      const now = Date.now();
-      const last = recentlySent.get(pathname);
-      if (last && now - last < DEDUPE_MS) return;
-      recentlySent.set(pathname, now);
+    // A second distinct page in one session. No scanner observed has done it.
+    if (seenPaths.size >= 2) qualify();
 
-      // keepalive so the request survives the visitor navigating away.
-      fetch("/api/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: pathname, referrer: document.referrer || null }),
-        keepalive: true,
-      }).catch(() => {});
-    };
-
-    // No visibility check here on purpose. Interaction already proves someone
-    // is present — a page cannot be scrolled or clicked while it is not being
-    // looked at — so gating on visibilityState as well adds nothing except a
-    // way to lose a real visitor silently if a browser reports it wrongly.
-    const maybeSend = () => {
-      if (done || !dwelled || !interacted) return;
-      done = true;
-      cleanup();
-      send();
-    };
-
-    const onInteract = () => {
-      interacted = true;
-      maybeSend();
-    };
-
-    const timer = setTimeout(() => {
-      dwelled = true;
-      maybeSend();
-    }, DWELL_MS);
-
-    for (const event of HUMAN_EVENTS) {
-      window.addEventListener(event, onInteract, { passive: true });
+    if (qualified) {
+      send(pathname);
+      return;
     }
 
-    function cleanup() {
-      clearTimeout(timer);
-      for (const event of HUMAN_EVENTS) window.removeEventListener(event, onInteract);
-    }
+    pending.add(pathname);
 
-    return cleanup;
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      // A page with nothing to scroll cannot qualify this way. It still
+      // qualifies the moment a second page is opened.
+      if (max <= 0) return;
+      if (window.scrollY / max >= SCROLL_FRACTION) {
+        window.removeEventListener("scroll", onScroll);
+        qualify();
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
 
   return null;

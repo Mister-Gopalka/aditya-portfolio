@@ -100,13 +100,16 @@ export function geoFromRequest(req: Request): { country: string | null; city: st
  * Anything that says it is not a person.
  *
  * This is the second line of defence, not the first — components/Tracker.tsx
- * only reports a view after a real interaction, and most automated fetchers
- * never get that far. What this catches is the ones that do render and
- * interact, plus it labels rather than silently drops, so "who keeps fetching
- * my link" stays answerable.
+ * only reports a view once the session shows depth, and most automated
+ * fetchers never get that far. What this catches is the honest ones, and it
+ * labels rather than silently drops, so "who keeps fetching my link" stays
+ * answerable.
  *
  * It will not catch a scanner that copies a real Chrome user agent, which the
- * email link-scanners do. The interaction gate is what stops those.
+ * datacenter link-scanners do — they cleared a user-agent check and a
+ * simulated-interaction check both. The depth gate is what stops those, and
+ * this list should never be widened in an attempt to do its job: every
+ * broadening so far has cost real visitors more than it caught.
  */
 const BOT_PATTERN = new RegExp(
   [
@@ -118,9 +121,20 @@ const BOT_PATTERN = new RegExp(
     // LLM fetchers — the ones Aditya suspected
     "gptbot", "chatgpt", "oai-searchbot", "openai", "perplexity", "claudebot",
     "anthropic", "ccbot", "bytespider", "amazonbot", "meta-externalagent",
-    // Link preview and unfurl, which is what a shared link triggers
-    "facebookexternalhit", "whatsapp", "telegram", "slack", "discord", "linkedin",
-    "twitterbot", "embedly", "quora link preview", "pinterest", "redditbot", "skypeuripreview",
+    // Link preview and unfurl, which is what a shared link triggers.
+    //
+    // Matched on the bot's own token, never the bare brand name. These apps
+    // ship an in-app browser whose user agent also carries the brand: a real
+    // person tapping the link inside LinkedIn sends "[LinkedInApp]", and
+    // matching "linkedin" flagged them as bots. That discarded exactly the
+    // visitors this site exists to catch, LinkedIn being where the link is
+    // shared. WhatsApp is deliberately absent: its fetcher is
+    // "WhatsApp/<version>" with no Mozilla prefix and the not-a-browser rule
+    // below catches it, while its Android in-app browser appends
+    // "WhatsApp/2.24" to a full Chrome user agent and must not be caught.
+    "facebookexternalhit", "telegrambot", "slackbot", "slack-imgproxy",
+    "discordbot", "linkedinbot", "twitterbot", "embedly", "quora link preview",
+    "pinterestbot", "redditbot", "skypeuripreview",
     // Monitoring and security scanners
     "uptimerobot", "pingdom", "statuscake", "site24x7", "monitor", "lighthouse",
     "pagespeed", "gtmetrix", "netcraft", "censys", "expanse", "zgrab", "masscan", "nuclei",
@@ -136,6 +150,11 @@ const BOT_PATTERN = new RegExp(
 export function isBot(userAgent: string): boolean {
   // No user agent at all is not a browser.
   if (!userAgent.trim()) return true;
+  // Neither is anything that does not claim to be one. Every real browser
+  // still sends the "Mozilla/" prefix; scripted fetchers and unfurlers such as
+  // "WhatsApp/2.19.81 A" do not. A scanner that fakes the prefix is not this
+  // function's problem — the depth gate in components/Tracker.tsx is.
+  if (!/mozilla\//i.test(userAgent)) return true;
   return BOT_PATTERN.test(userAgent);
 }
 

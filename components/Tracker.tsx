@@ -10,27 +10,36 @@ import { usePathname } from "next/navigation";
 const recentlySent = new Map<string, number>();
 const DEDUPE_MS = 2000;
 
-// A view is only reported once the session shows depth: a second page opened,
-// or a real distance scrolled into one.
+// A visit counts once it looks like reading rather than fetching.
 //
-// An earlier version gated on dwell plus one interaction event. It failed.
-// Over the 24 hours after it shipped, 23 of 24 recorded views still came from
-// AWS us-east-1 and Google us-central1, seven of them in duplicate pairs
-// microseconds apart. Those scanners run headless Chrome: they wait out a
-// timer and they emit scroll and pointer events, so anything built on "did
-// something happen" is spoofable and was.
+//   engaged  + 10 seconds  -> counted
+//   nothing  + 20 seconds  -> counted
 //
-// What none of them has ever done, across every row inspected, is open a
-// second page. They fetch "/" and leave. Depth is the signal that survives,
-// because it costs a scanner real work to fake and costs a reader nothing.
-const SCROLL_FRACTION = 0.25;
+// Engaged means either scrolling far enough down the homepage to reach the
+// project cards, or being on a project page at all, since links to those are
+// shared directly and opening one is the whole intent.
+//
+// An earlier version counted after 3 seconds plus any single event. It failed:
+// in the 24 hours after it shipped, 23 of 24 recorded views came from AWS
+// us-east-1 and Google us-central1, seven in duplicate pairs microseconds
+// apart. Those scanners run headless Chrome, wait out timers and emit events.
+// Longer thresholds raise the cost of faking a read but do not make it
+// impossible, so if datacenter cities reappear in the panel the answer is to
+// filter on network origin, not to keep inflating these numbers.
+const ENGAGED_MS = 10_000;
+const PATIENT_MS = 20_000;
+
+// How far down counts as reaching the projects: the first project card sitting
+// in the upper part of the viewport, after a scroll the visitor actually made.
+const CARD_IN_VIEW_FRACTION = 0.6;
 
 // Deliberately not sessionStorage. Nothing may be written to a visitor's
-// browser — that property is why the site needs no consent banner (HANDOFF
-// §2b). Module scope carries qualification across client-side navigation,
-// which is the case that matters, and resets on a full reload.
+// browser, which is what keeps the site free of a consent banner (HANDOFF
+// §2b). Module scope carries a visit across client-side navigation, which is
+// the case that matters, and resets on a full reload.
+let visitStart = 0;
 let qualified = false;
-const seenPaths = new Set<string>();
+let engaged = false;
 const pending = new Set<string>();
 
 function send(path: string) {
@@ -49,11 +58,11 @@ function send(path: string) {
 }
 
 /**
- * Flushes everything held back, then reports directly from here on.
+ * Reports every page held back so far, then reports directly from here on.
  *
- * The homepage view of someone who goes on to read a project is a real view
- * and is not thrown away — it is held until they prove themselves and sent
- * afterwards, so the first page of a genuine visit still counts.
+ * Pages are held rather than dropped. Someone who reads the homepage and then
+ * opens two projects is one visit that read three pages, and all three are
+ * recorded once they qualify. Nothing genuine is lost by making them wait.
  */
 function qualify() {
   if (qualified) return;
@@ -62,12 +71,6 @@ function qualify() {
   pending.clear();
 }
 
-/**
- * Fires at most one /api/track call per page view, once the session qualifies.
- *
- * Deliberately tiny and dependency-free: no third-party script, no cookie, no
- * storage of any kind, nothing that blocks or delays render.
- */
 export default function Tracker() {
   const pathname = usePathname();
 
@@ -77,10 +80,7 @@ export default function Tracker() {
     // a device you have signed in from are dropped server-side.
     if (pathname.startsWith("/admin")) return;
 
-    seenPaths.add(pathname);
-
-    // A second distinct page in one session. No scanner observed has done it.
-    if (seenPaths.size >= 2) qualify();
+    if (!visitStart) visitStart = Date.now();
 
     if (qualified) {
       send(pathname);
@@ -89,19 +89,48 @@ export default function Tracker() {
 
     pending.add(pathname);
 
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      // A page with nothing to scroll cannot qualify this way. It still
-      // qualifies the moment a second page is opened.
-      if (max <= 0) return;
-      if (window.scrollY / max >= SCROLL_FRACTION) {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const qualifyIn = (ms: number) => {
+      timers.push(setTimeout(qualify, Math.max(0, ms)));
+    };
+
+    // Thresholds run from the start of the visit, not of this page, so time
+    // spent reading carries across a click into a project.
+    const elapsed = () => Date.now() - visitStart;
+
+    // The patient visitor: no engagement required, just real time on the site.
+    qualifyIn(PATIENT_MS - elapsed());
+
+    const markEngaged = () => {
+      if (engaged || qualified) return;
+      engaged = true;
+      qualifyIn(ENGAGED_MS - elapsed());
+    };
+
+    // Opening a project is engagement in itself.
+    if (pathname.startsWith("/projects/")) markEngaged();
+
+    const onScroll = (event: Event) => {
+      // Only a scroll the browser attributes to a person. A script calling
+      // dispatchEvent produces isTrusted false, which costs an automated
+      // client nothing to avoid but does filter the careless ones.
+      if (!event.isTrusted) return;
+      if (window.scrollY <= 0) return;
+
+      const card = document.querySelector('a[href^="/projects/"]');
+      if (!card) return;
+      if (card.getBoundingClientRect().top <= window.innerHeight * CARD_IN_VIEW_FRACTION) {
         window.removeEventListener("scroll", onScroll);
-        qualify();
+        markEngaged();
       }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      for (const timer of timers) clearTimeout(timer);
+    };
   }, [pathname]);
 
   return null;
